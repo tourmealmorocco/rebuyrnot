@@ -17,7 +17,7 @@ const ProductScoreDisplay = ({ rebuyPercent, totalVotes }: ProductScoreDisplayPr
         transition={{ type: 'spring', stiffness: 200, damping: 20 }}
         className="mb-2"
       >
-        <span className="text-7xl md:text-8xl font-bold text-foreground">
+        <span className="text-5xl sm:text-7xl md:text-8xl font-bold text-foreground">
           {rebuyPercent.toFixed(0)}%
         </span>
       </motion.div>
@@ -26,7 +26,7 @@ const ProductScoreDisplay = ({ rebuyPercent, totalVotes }: ProductScoreDisplayPr
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="text-2xl md:text-3xl font-bold tracking-wider mb-3"
+        className="text-xl sm:text-2xl md:text-3xl font-bold tracking-wider mb-2 sm:mb-3"
       >
         <span className="text-success">REBUY</span>
         <span className="text-destructive">RNOT</span>
@@ -36,9 +36,9 @@ const ProductScoreDisplay = ({ rebuyPercent, totalVotes }: ProductScoreDisplayPr
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="text-muted-foreground text-sm uppercase tracking-wide"
+        className="text-muted-foreground text-xs sm:text-sm uppercase tracking-wide"
       >
-        {t.finalVerdict} {totalVotes.toLocaleString()}+ {t.owners}
+        {t.finalScore} {totalVotes.toLocaleString()}+ {t.owners}
       </motion.p>
     </div>
   );
