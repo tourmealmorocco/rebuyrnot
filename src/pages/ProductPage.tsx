@@ -162,7 +162,7 @@ const ProductPage = () => {
       </div>
 
       {/* Hero Image */}
-      <div className="relative h-64 md:h-80 overflow-hidden bg-secondary">
+      <div className="relative h-48 sm:h-56 md:h-72 overflow-hidden bg-secondary">
         <img
           src={product.image}
           alt={`${product.brand} ${product.name}`}
@@ -172,16 +172,16 @@ const ProductPage = () => {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 -mt-12 sm:-mt-16 relative z-10 pb-8 sm:pb-12">
+      <div className="container mx-auto px-4 -mt-10 sm:-mt-14 relative z-10 pb-6 sm:pb-10">
         {/* Product Info */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-6 sm:mb-8"
+          className="text-center mb-4 sm:mb-6"
         >
-          <p className="text-muted-foreground text-sm sm:text-base mb-1">{product.brand}</p>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3">{product.name}</h1>
-          <p className="text-muted-foreground text-sm sm:text-base max-w-xl mx-auto px-2">{product.description}</p>
+          <p className="text-muted-foreground text-sm mb-1">{product.brand}</p>
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 sm:mb-2">{product.name}</h1>
+          <p className="text-muted-foreground text-xs sm:text-sm max-w-xl mx-auto px-2 line-clamp-2">{product.description}</p>
         </motion.div>
 
         {/* Score Display */}
@@ -189,7 +189,7 @@ const ProductPage = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
-          className="bg-card border border-border rounded-2xl sm:rounded-3xl p-5 sm:p-8 mb-6 sm:mb-8"
+          className="bg-card border border-border rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6"
         >
           <ProductScoreDisplay rebuyPercent={rebuyPercent} totalVotes={totalVotes} />
         </motion.div>
@@ -199,12 +199,12 @@ const ProductPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 sm:mb-10"
+          className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-6 sm:mb-8"
         >
           <Button
             onClick={() => handleVoteClick('rebuy')}
             disabled={hasVoted}
-            className={`flex-1 h-14 sm:h-16 text-base sm:text-lg rounded-xl sm:rounded-2xl gap-2 sm:gap-3 ${
+            className={`flex-1 h-12 sm:h-14 text-base rounded-xl gap-2 ${
               hasVoted && userVote === 'rebuy'
                 ? 'bg-success text-success-foreground'
                 : hasVoted
@@ -212,13 +212,13 @@ const ProductPage = () => {
                 : 'bg-success hover:bg-success/90 text-success-foreground'
             }`}
           >
-            <Check className="h-5 w-5 sm:h-6 sm:w-6" />
+            <Check className="h-5 w-5" />
             {t.idRebuy}
           </Button>
           <Button
             onClick={() => handleVoteClick('not')}
             disabled={hasVoted}
-            className={`flex-1 h-14 sm:h-16 text-base sm:text-lg rounded-xl sm:rounded-2xl gap-2 sm:gap-3 ${
+            className={`flex-1 h-12 sm:h-14 text-base rounded-xl gap-2 ${
               hasVoted && userVote === 'not'
                 ? 'bg-destructive text-destructive-foreground'
                 : hasVoted
@@ -226,7 +226,7 @@ const ProductPage = () => {
                 : 'bg-destructive hover:bg-destructive/90 text-destructive-foreground'
             }`}
           >
-            <X className="h-5 w-5 sm:h-6 sm:w-6" />
+            <X className="h-5 w-5" />
             {t.notAgain}
           </Button>
         </motion.div>

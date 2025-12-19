@@ -4,18 +4,24 @@ interface UseCountUpOptions {
   duration?: number;
   delay?: number;
   decimals?: number;
+  enabled?: boolean;
 }
 
 const useCountUp = (
   targetValue: number,
   options: UseCountUpOptions = {}
 ): number => {
-  const { duration = 1500, delay = 0, decimals = 0 } = options;
+  const { duration = 1800, delay = 0, decimals = 0, enabled = true } = options;
   const [currentValue, setCurrentValue] = useState(0);
   const startTimeRef = useRef<number | null>(null);
   const animationFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
+    if (!enabled) {
+      setCurrentValue(0);
+      return;
+    }
+
     const startAnimation = () => {
       const animate = (timestamp: number) => {
         if (startTimeRef.current === null) {
@@ -25,8 +31,8 @@ const useCountUp = (
         const elapsed = timestamp - startTimeRef.current;
         const progress = Math.min(elapsed / duration, 1);
         
-        // Easing function for smooth animation (ease-out cubic)
-        const easedProgress = 1 - Math.pow(1 - progress, 3);
+        // Smoother easing function (ease-out quart)
+        const easedProgress = 1 - Math.pow(1 - progress, 4);
         
         const value = easedProgress * targetValue;
         setCurrentValue(Number(value.toFixed(decimals)));
@@ -48,7 +54,7 @@ const useCountUp = (
       }
       startTimeRef.current = null;
     };
-  }, [targetValue, duration, delay, decimals]);
+  }, [targetValue, duration, delay, decimals, enabled]);
 
   return currentValue;
 };
