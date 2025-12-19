@@ -315,9 +315,9 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useAdmin = () => {
+export const useAdmin = (): AdminContextType => {
   const context = useContext(AdminContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useAdmin must be used within an AdminProvider');
   }
   return context;
