@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
+import useCountUp from '@/hooks/useCountUp';
 
 interface ProductScoreDisplayProps {
   rebuyPercent: number;
@@ -8,6 +9,7 @@ interface ProductScoreDisplayProps {
 
 const ProductScoreDisplay = ({ rebuyPercent, totalVotes }: ProductScoreDisplayProps) => {
   const { t } = useLanguage();
+  const animatedPercent = useCountUp(rebuyPercent, { duration: 1500, delay: 200 });
 
   return (
     <div className="text-center">
@@ -18,7 +20,7 @@ const ProductScoreDisplay = ({ rebuyPercent, totalVotes }: ProductScoreDisplayPr
         className="mb-2"
       >
         <span className="text-5xl sm:text-7xl md:text-8xl font-bold text-foreground">
-          {rebuyPercent.toFixed(0)}%
+          {animatedPercent}%
         </span>
       </motion.div>
       
