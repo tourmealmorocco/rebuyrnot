@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Check, X, Share2 } from 'lucide-react';
+import { ArrowLeft, Check, X, Share2, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage, Language } from '@/contexts/LanguageContext';
 import { getProductById } from '@/data/products';
 import ProductScoreDisplay from '@/components/ProductScoreDisplay';
 import CommentModal from '@/components/CommentModal';
@@ -11,8 +11,9 @@ import { toast } from '@/hooks/use-toast';
 
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>();
-  const { t, isRTL } = useLanguage();
+  const { t, isRTL, language, setLanguage } = useLanguage();
   const product = getProductById(id || '');
+  const [showLangMenu, setShowLangMenu] = useState(false);
   
   const [hasVoted, setHasVoted] = useState(false);
   const [userVote, setUserVote] = useState<'rebuy' | 'not' | null>(null);
@@ -97,24 +98,64 @@ const ProductPage = () => {
     }
   };
 
+  const languages: { code: Language; label: string }[] = [
+    { code: 'en', label: 'EN' },
+    { code: 'fr', label: 'FR' },
+    { code: 'ar', label: 'عر' },
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
           <Link
             to="/"
             className={`flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
           >
             <ArrowLeft className={`h-5 w-5 ${isRTL ? 'rotate-180' : ''}`} />
-            <span>{t.backToProducts}</span>
+            <span className="hidden sm:inline">{t.backToProducts}</span>
           </Link>
-          <button
-            onClick={handleShare}
-            className="p-2 hover:bg-secondary rounded-full transition-colors"
-          >
-            <Share2 className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Language Switcher */}
+            <div className="relative">
+              <button
+                onClick={() => setShowLangMenu(!showLangMenu)}
+                className="p-2 hover:bg-secondary rounded-full transition-colors flex items-center gap-1"
+              >
+                <Globe className="h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="text-xs sm:text-sm font-medium">{language.toUpperCase()}</span>
+              </button>
+              {showLangMenu && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="absolute top-full mt-1 right-0 bg-card border border-border rounded-lg shadow-lg overflow-hidden z-50"
+                >
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        setLanguage(lang.code);
+                        setShowLangMenu(false);
+                      }}
+                      className={`block w-full px-4 py-2 text-sm text-left hover:bg-secondary transition-colors ${
+                        language === lang.code ? 'bg-secondary' : ''
+                      }`}
+                    >
+                      {lang.label}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </div>
+            <button
+              onClick={handleShare}
+              className="p-2 hover:bg-secondary rounded-full transition-colors"
+            >
+              <Share2 className="h-4 w-4 sm:h-5 sm:w-5" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -129,16 +170,16 @@ const ProductPage = () => {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 -mt-16 relative z-10 pb-12">
+      <div className="container mx-auto px-4 -mt-12 sm:-mt-16 relative z-10 pb-8 sm:pb-12">
         {/* Product Info */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
+          className="text-center mb-6 sm:mb-8"
         >
-          <p className="text-muted-foreground mb-1">{product.brand}</p>
-          <h1 className="text-3xl md:text-4xl font-bold mb-3">{product.name}</h1>
-          <p className="text-muted-foreground max-w-xl mx-auto">{product.description}</p>
+          <p className="text-muted-foreground text-sm sm:text-base mb-1">{product.brand}</p>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3">{product.name}</h1>
+          <p className="text-muted-foreground text-sm sm:text-base max-w-xl mx-auto px-2">{product.description}</p>
         </motion.div>
 
         {/* Score Display */}
@@ -146,7 +187,7 @@ const ProductPage = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
-          className="bg-card border border-border rounded-3xl p-8 mb-8"
+          className="bg-card border border-border rounded-2xl sm:rounded-3xl p-5 sm:p-8 mb-6 sm:mb-8"
         >
           <ProductScoreDisplay rebuyPercent={rebuyPercent} totalVotes={totalVotes} />
         </motion.div>
@@ -156,12 +197,12 @@ const ProductPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="flex gap-4 mb-10"
+          className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 sm:mb-10"
         >
           <Button
             onClick={() => handleVoteClick('rebuy')}
             disabled={hasVoted}
-            className={`flex-1 h-16 text-lg rounded-2xl gap-3 ${
+            className={`flex-1 h-14 sm:h-16 text-base sm:text-lg rounded-xl sm:rounded-2xl gap-2 sm:gap-3 ${
               hasVoted && userVote === 'rebuy'
                 ? 'bg-success text-success-foreground'
                 : hasVoted
@@ -169,13 +210,13 @@ const ProductPage = () => {
                 : 'bg-success hover:bg-success/90 text-success-foreground'
             }`}
           >
-            <Check className="h-6 w-6" />
+            <Check className="h-5 w-5 sm:h-6 sm:w-6" />
             {t.idRebuy}
           </Button>
           <Button
             onClick={() => handleVoteClick('not')}
             disabled={hasVoted}
-            className={`flex-1 h-16 text-lg rounded-2xl gap-3 ${
+            className={`flex-1 h-14 sm:h-16 text-base sm:text-lg rounded-xl sm:rounded-2xl gap-2 sm:gap-3 ${
               hasVoted && userVote === 'not'
                 ? 'bg-destructive text-destructive-foreground'
                 : hasVoted
@@ -183,7 +224,7 @@ const ProductPage = () => {
                 : 'bg-destructive hover:bg-destructive/90 text-destructive-foreground'
             }`}
           >
-            <X className="h-6 w-6" />
+            <X className="h-5 w-5 sm:h-6 sm:w-6" />
             {t.notAgain}
           </Button>
         </motion.div>
@@ -193,35 +234,35 @@ const ProductPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="grid md:grid-cols-2 gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6"
         >
           {/* Rebuy Reasons */}
-          <div className="bg-card border border-border rounded-3xl p-6">
-            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-success" />
+          <div className="bg-card border border-border rounded-2xl sm:rounded-3xl p-4 sm:p-6">
+            <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 flex items-center gap-2">
+              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-success" />
               {t.topReasonsRebuy}
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-2 sm:space-y-3">
               {product.topRebuyReasons.map((reason, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <span className="text-success font-bold">{index + 1}.</span>
-                  <span className="text-muted-foreground">{reason}</span>
+                <li key={index} className="flex items-start gap-2 sm:gap-3">
+                  <span className="text-success font-bold text-sm sm:text-base">{index + 1}.</span>
+                  <span className="text-muted-foreground text-sm sm:text-base">{reason}</span>
                 </li>
               ))}
             </ul>
           </div>
 
           {/* Not Reasons */}
-          <div className="bg-card border border-border rounded-3xl p-6">
-            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-destructive" />
+          <div className="bg-card border border-border rounded-2xl sm:rounded-3xl p-4 sm:p-6">
+            <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 flex items-center gap-2">
+              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-destructive" />
               {t.topReasonsNot}
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-2 sm:space-y-3">
               {product.topNotReasons.map((reason, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <span className="text-destructive font-bold">{index + 1}.</span>
-                  <span className="text-muted-foreground">{reason}</span>
+                <li key={index} className="flex items-start gap-2 sm:gap-3">
+                  <span className="text-destructive font-bold text-sm sm:text-base">{index + 1}.</span>
+                  <span className="text-muted-foreground text-sm sm:text-base">{reason}</span>
                 </li>
               ))}
             </ul>

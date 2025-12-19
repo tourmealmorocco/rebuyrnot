@@ -24,7 +24,7 @@ interface Translations {
   // New translations
   idRebuy: string;
   notAgain: string;
-  finalVerdict: string;
+  finalScore: string;
   topReasonsRebuy: string;
   topReasonsNot: string;
   writeReview: string;
@@ -59,7 +59,7 @@ const translations: Record<Language, Translations> = {
     votes: 'votes',
     idRebuy: "I'd Rebuy",
     notAgain: "Not Again",
-    finalVerdict: "Final verdict from",
+    finalScore: "The score from",
     topReasonsRebuy: "Top 3 Reasons to Rebuy",
     topReasonsNot: "Top 3 Reasons Not Again",
     writeReview: "Write Your Review",
@@ -92,7 +92,7 @@ const translations: Record<Language, Translations> = {
     votes: 'votes',
     idRebuy: "Je rachèterais",
     notAgain: "Plus jamais",
-    finalVerdict: "Verdict final de",
+    finalScore: "Le score de",
     topReasonsRebuy: "Top 3 Raisons de Racheter",
     topReasonsNot: "Top 3 Raisons de Ne Pas",
     writeReview: "Écrire Votre Avis",
@@ -125,7 +125,7 @@ const translations: Record<Language, Translations> = {
     votes: 'أصوات',
     idRebuy: "غادي نعاود نشريه",
     notAgain: "ماغاديش",
-    finalVerdict: "الحكم النهائي من",
+    finalScore: "النتيجة من",
     topReasonsRebuy: "أهم 3 أسباب للشراء",
     topReasonsNot: "أهم 3 أسباب للندم",
     writeReview: "اكتب رأيك",
