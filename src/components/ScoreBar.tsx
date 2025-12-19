@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
+import useCountUp from '@/hooks/useCountUp';
 
 interface ScoreBarProps {
   rebuyPercent: number;
@@ -9,6 +10,9 @@ interface ScoreBarProps {
 const ScoreBar = ({ rebuyPercent, totalVotes }: ScoreBarProps) => {
   const { t } = useLanguage();
   const notPercent = 100 - rebuyPercent;
+  
+  const animatedRebuy = useCountUp(rebuyPercent, { duration: 1500, delay: 100 });
+  const animatedNot = useCountUp(notPercent, { duration: 1500, delay: 100 });
 
   return (
     <div className="space-y-3">
@@ -23,13 +27,13 @@ const ScoreBar = ({ rebuyPercent, totalVotes }: ScoreBarProps) => {
           className="h-full bg-success"
           initial={{ width: 0 }}
           animate={{ width: `${rebuyPercent}%` }}
-          transition={{ type: 'spring', stiffness: 100, damping: 20, delay: 0.1 }}
+          transition={{ duration: 1.5, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.1 }}
         />
         <motion.div
           className="h-full bg-destructive"
           initial={{ width: 0 }}
           animate={{ width: `${notPercent}%` }}
-          transition={{ type: 'spring', stiffness: 100, damping: 20, delay: 0.15 }}
+          transition={{ duration: 1.5, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.15 }}
         />
       </div>
 
@@ -40,7 +44,7 @@ const ScoreBar = ({ rebuyPercent, totalVotes }: ScoreBarProps) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          {rebuyPercent.toFixed(0)}%
+          {animatedRebuy}%
         </motion.span>
         <motion.span 
           className="text-muted-foreground text-xs"
@@ -56,7 +60,7 @@ const ScoreBar = ({ rebuyPercent, totalVotes }: ScoreBarProps) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          {notPercent.toFixed(0)}%
+          {animatedNot}%
         </motion.span>
       </div>
     </div>

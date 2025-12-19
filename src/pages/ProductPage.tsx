@@ -111,10 +111,12 @@ const ProductPage = () => {
         <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
           <Link
             to="/"
-            className={`flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
+            className={`flex items-center gap-2 hover:opacity-80 transition-opacity ${isRTL ? 'flex-row-reverse' : ''}`}
           >
-            <ArrowLeft className={`h-5 w-5 ${isRTL ? 'rotate-180' : ''}`} />
-            <span className="hidden sm:inline">{t.backToProducts}</span>
+            <ArrowLeft className={`h-5 w-5 text-muted-foreground ${isRTL ? 'rotate-180' : ''}`} />
+            <span className="text-lg sm:text-xl font-bold tracking-tight">
+              Rebuy<span className="text-success">R</span>not
+            </span>
           </Link>
           <div className="flex items-center gap-2">
             {/* Language Switcher */}

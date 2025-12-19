@@ -1,4 +1,5 @@
 import { Search, Globe } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useLanguage, Language } from '@/contexts/LanguageContext';
 import { motion } from 'framer-motion';
 
@@ -22,14 +23,16 @@ const Navbar = ({ searchQuery, onSearchChange, totalVotes }: NavbarProps) => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between gap-4">
           {/* Logo */}
-          <motion.h1 
-            className="text-xl md:text-2xl font-bold tracking-tight"
-            initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            Rebuy<span className="text-success">R</span>not
-          </motion.h1>
+          <Link to="/">
+            <motion.h1 
+              className="text-xl md:text-2xl font-bold tracking-tight hover:opacity-80 transition-opacity cursor-pointer"
+              initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              Rebuy<span className="text-success">R</span>not
+            </motion.h1>
+          </Link>
 
           {/* Search */}
           <div className="flex-1 max-w-md hidden sm:block">
