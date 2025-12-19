@@ -4,14 +4,16 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Check, X, Share2, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage, Language } from '@/contexts/LanguageContext';
-import { getProductById } from '@/data/products';
+import { useAdmin } from '@/contexts/AdminContext';
 import ProductScoreDisplay from '@/components/ProductScoreDisplay';
+import ScoreBar from '@/components/ScoreBar';
 import CommentModal from '@/components/CommentModal';
 import { toast } from '@/hooks/use-toast';
 
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>();
   const { t, isRTL, language, setLanguage } = useLanguage();
+  const { getProductById } = useAdmin();
   const product = getProductById(id || '');
   const [showLangMenu, setShowLangMenu] = useState(false);
   
@@ -192,6 +194,9 @@ const ProductPage = () => {
           className="bg-card border border-border rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6"
         >
           <ProductScoreDisplay rebuyPercent={rebuyPercent} totalVotes={totalVotes} />
+          <div className="mt-4">
+            <ScoreBar rebuyPercent={rebuyPercent} totalVotes={totalVotes} />
+          </div>
         </motion.div>
 
         {/* Vote Buttons */}

@@ -1,27 +1,7 @@
-export interface Comment {
-  id: string;
-  vote: 'rebuy' | 'not';
-  text: string;
-  date: string;
-}
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { Product, Comment } from '@/data/products';
 
-export interface Product {
-  id: string;
-  name: string;
-  brand: string;
-  category: 'cars' | 'tech' | 'beauty' | 'fashion' | 'home';
-  image: string;
-  rebuyCount: number;
-  notCount: number;
-  recentVotes: number;
-  description: string;
-  topRebuyReasons: string[];
-  topNotReasons: string[];
-  comments: Comment[];
-}
-
-const STORAGE_KEY = 'rebuyrnot-products';
-
+// Default products data
 const defaultProducts: Product[] = [
   {
     id: '1',
@@ -223,27 +203,106 @@ const defaultProducts: Product[] = [
   },
 ];
 
-// Get products from localStorage or use defaults
-export const getProducts = (): Product[] => {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
-    try {
-      return JSON.parse(saved);
-    } catch {
-      return defaultProducts;
+const STORAGE_KEY = 'rebuyrnot-products';
+const AUTH_KEY = 'rebuyrnot-admin-auth';
+const ADMIN_PASSWORD = 'admin123'; // In production, use env variable
+
+interface AdminContextType {
+  products: Product[];
+  isAuthenticated: boolean;
+  login: (password: string) => boolean;
+  logout: () => void;
+  addProduct: (product: Omit<Product, 'id'>) => void;
+  updateProduct: (id: string, product: Partial<Product>) => void;
+  deleteProduct: (id: string) => void;
+  getProductById: (id: string) => Product | undefined;
+  getTotalVotes: () => number;
+}
+
+const AdminContext = createContext<AdminContextType | undefined>(undefined);
+
+export const AdminProvider = ({ children }: { children: ReactNode }) => {
+  const [products, setProducts] = useState<Product[]>(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return defaultProducts;
+      }
     }
+    return defaultProducts;
+  });
+
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem(AUTH_KEY) === 'true';
+  });
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+  }, [products]);
+
+  const login = (password: string): boolean => {
+    if (password === ADMIN_PASSWORD) {
+      setIsAuthenticated(true);
+      localStorage.setItem(AUTH_KEY, 'true');
+      return true;
+    }
+    return false;
+  };
+
+  const logout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem(AUTH_KEY);
+  };
+
+  const addProduct = (product: Omit<Product, 'id'>) => {
+    const newProduct: Product = {
+      ...product,
+      id: Date.now().toString(),
+    };
+    setProducts(prev => [...prev, newProduct]);
+  };
+
+  const updateProduct = (id: string, updates: Partial<Product>) => {
+    setProducts(prev => 
+      prev.map(p => p.id === id ? { ...p, ...updates } : p)
+    );
+  };
+
+  const deleteProduct = (id: string) => {
+    setProducts(prev => prev.filter(p => p.id !== id));
+  };
+
+  const getProductById = (id: string) => {
+    return products.find(p => p.id === id);
+  };
+
+  const getTotalVotes = () => {
+    return products.reduce((acc, p) => acc + p.rebuyCount + p.notCount, 0);
+  };
+
+  return (
+    <AdminContext.Provider value={{
+      products,
+      isAuthenticated,
+      login,
+      logout,
+      addProduct,
+      updateProduct,
+      deleteProduct,
+      getProductById,
+      getTotalVotes,
+    }}>
+      {children}
+    </AdminContext.Provider>
+  );
+};
+
+export const useAdmin = () => {
+  const context = useContext(AdminContext);
+  if (!context) {
+    throw new Error('useAdmin must be used within an AdminProvider');
   }
-  return defaultProducts;
-};
-
-export const products = getProducts();
-
-export const getTotalVotes = () => {
-  const currentProducts = getProducts();
-  return currentProducts.reduce((acc, p) => acc + p.rebuyCount + p.notCount, 0);
-};
-
-export const getProductById = (id: string): Product | undefined => {
-  const currentProducts = getProducts();
-  return currentProducts.find(p => p.id === id);
+  return context;
 };

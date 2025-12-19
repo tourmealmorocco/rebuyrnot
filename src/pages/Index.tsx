@@ -4,13 +4,14 @@ import Navbar from '@/components/Navbar';
 import CategoryPills from '@/components/CategoryPills';
 import ProductCard from '@/components/ProductCard';
 import MissionPopup from '@/components/MissionPopup';
-import { products, getTotalVotes } from '@/data/products';
+import { useAdmin } from '@/contexts/AdminContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 type Category = 'all' | 'cars' | 'tech' | 'beauty' | 'fashion' | 'home';
 
 const Index = () => {
   const { t } = useLanguage();
+  const { products, getTotalVotes } = useAdmin();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
   const totalVotes = getTotalVotes();
@@ -23,7 +24,7 @@ const Index = () => {
       const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, selectedCategory]);
+  }, [products, searchQuery, selectedCategory]);
 
   return (
     <div className="min-h-screen bg-background">
