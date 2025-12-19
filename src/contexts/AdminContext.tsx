@@ -242,6 +242,22 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
   }, [products]);
 
+  // Cross-tab sync: listen for localStorage changes from other tabs
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY && e.newValue) {
+        try {
+          setProducts(JSON.parse(e.newValue));
+        } catch {
+          // Ignore parse errors
+        }
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   const login = (password: string): boolean => {
     if (password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
