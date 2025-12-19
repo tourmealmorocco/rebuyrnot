@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import CategoryPills from '@/components/CategoryPills';
 import ProductCard from '@/components/ProductCard';
+import MissionPopup from '@/components/MissionPopup';
 import { products, getTotalVotes } from '@/data/products';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -79,6 +80,8 @@ const Index = () => {
             <p className="text-muted-foreground text-lg">No products found</p>
           </motion.div>
         )}
+
+        <MissionPopup />
       </main>
     </div>
   );
