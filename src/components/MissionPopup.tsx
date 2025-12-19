@@ -101,7 +101,12 @@ const MissionPopup = () => {
                       🛡️ تجربتك مع هاد المنتج ماشي غير معلومة، هي حماية لواحد آخر غدي يشري نفس المنتوج.
                     </p>
                     <p className="text-foreground leading-relaxed">
-                      ملي كتقول <span className="text-destructive font-semibold">Not</span>، راك كتوقف سلسلة ديال النصب. وملي كتقول <span className="text-success font-semibold">Rebuy</span>، راك كتدل شخص أخر على الجودة.
+                      ملي كتقول <span className="text-destructive font-semibold">Not</span>، راك كتوقف سلسلة ديال النصب وكتفضح الجودة الضعيفة.
+                      وملي كتقول <span className="text-success font-semibold">Rebuy</span>، راك كتدل شخص أخر على الهمزة الحقيقية و الجودة.
+                    </p>
+                    <p className="text-foreground leading-relaxed">
+                      ماتخليش تجربتك توقف عندك..
+                      اعطي <span className="font-semibold">'The Score'</span> اليوم، وكون نتا هو الحاجز ضد النصب وضياع الفلوس. 💪
                     </p>
                   </>
                 )}
@@ -111,7 +116,12 @@ const MissionPopup = () => {
                       🛡️ Votre expérience avec ce produit n'est pas qu'une simple info, c'est une protection pour quelqu'un d'autre.
                     </p>
                     <p className="text-foreground leading-relaxed">
-                      Quand vous dites <span className="text-destructive font-semibold">Not</span>, vous arrêtez une arnaque. Quand vous dites <span className="text-success font-semibold">Rebuy</span>, vous guidez vers la qualité.
+                      Quand vous dites <span className="text-destructive font-semibold">Not</span>, vous arrêtez une chaîne d'arnaque et exposez la mauvaise qualité.
+                      Quand vous dites <span className="text-success font-semibold">Rebuy</span>, vous guidez quelqu'un vers l'excellence et la qualité.
+                    </p>
+                    <p className="text-foreground leading-relaxed">
+                      Ne gardez pas votre expérience pour vous..
+                      Donnez <span className="font-semibold">'The Score'</span> aujourd'hui, et soyez la barrière contre les arnaques et la perte d'argent. 💪
                     </p>
                   </>
                 )}
@@ -121,7 +131,12 @@ const MissionPopup = () => {
                       🛡️ Your experience with this product isn't just information, it's protection for someone else about to buy the same thing.
                     </p>
                     <p className="text-foreground leading-relaxed">
-                      When you say <span className="text-destructive font-semibold">Not</span>, you stop a scam chain. When you say <span className="text-success font-semibold">Rebuy</span>, you guide someone to quality.
+                      When you say <span className="text-destructive font-semibold">Not</span>, you stop a scam chain and expose poor quality.
+                      When you say <span className="text-success font-semibold">Rebuy</span>, you guide someone to real excellence and quality.
+                    </p>
+                    <p className="text-foreground leading-relaxed">
+                      Don't let your experience stop with you..
+                      Give <span className="font-semibold">'The Score'</span> today, and be the barrier against scams and wasted money. 💪
                     </p>
                   </>
                 )}
