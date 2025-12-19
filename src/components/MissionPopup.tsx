@@ -1,16 +1,29 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check } from 'lucide-react';
+import { Check, Globe } from 'lucide-react';
+import { useLanguage, Language } from '@/contexts/LanguageContext';
 
 const STORAGE_KEY = 'rebuyrnot-mission-seen';
 
+const languages: { code: Language; label: string; flag: string }[] = [
+  { code: 'ar', label: 'الدارجة', flag: '🇲🇦' },
+  { code: 'fr', label: 'Français', flag: '🇫🇷' },
+  { code: 'en', label: 'English', flag: '🇬🇧' },
+];
+
 const MissionPopup = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [selectedLang, setSelectedLang] = useState<Language>('ar');
+  const { setLanguage, t, isRTL } = useLanguage();
 
   useEffect(() => {
     const alreadySeen = localStorage.getItem(STORAGE_KEY);
     if (!alreadySeen) {
-      setIsVisible(true);
+      // Show popup after 3 seconds
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+      }, 3000);
+      return () => clearTimeout(timer);
     }
   }, []);
 
@@ -26,6 +39,7 @@ const MissionPopup = () => {
   }, [isVisible]);
 
   const handleAgree = () => {
+    setLanguage(selectedLang);
     setIsVisible(false);
     localStorage.setItem(STORAGE_KEY, 'true');
   };
@@ -51,25 +65,74 @@ const MissionPopup = () => {
             transition={{ type: 'spring', damping: 25, stiffness: 300, delay: 0.1 }}
             className="relative glass rounded-3xl p-8 shadow-2xl border border-border/30 max-w-lg w-full"
           >
-            <div dir="rtl" className="text-right space-y-6">
-              <p className="text-foreground leading-relaxed text-lg">
-                🛡️ تجربتك مع هاد المنتج ماشي غير معلومة، هي حماية لواحد آخر غدي يشري نفس المنتوج.
-              </p>
+            <div className="space-y-6">
+              {/* Language Selection */}
+              <div className="text-center space-y-4">
+                <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                  <Globe className="w-5 h-5" />
+                  <span className="text-sm font-medium">Choose your language</span>
+                </div>
+                
+                <div className="flex justify-center gap-3">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => setSelectedLang(lang.code)}
+                      className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-200 min-w-[90px] ${
+                        selectedLang === lang.code
+                          ? 'border-primary bg-primary/10 scale-105'
+                          : 'border-border/50 hover:border-primary/50 hover:bg-muted/50'
+                      }`}
+                    >
+                      <span className="text-2xl">{lang.flag}</span>
+                      <span className="text-sm font-medium text-foreground">{lang.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-              <p className="text-foreground leading-relaxed text-lg">
-                ملي كتقول <span className="text-destructive font-semibold">Not</span>، راك كتوقف سلسلة ديال النصب وكتفضح الجودة الضعيفة. وملي كتقول <span className="text-success font-semibold">Rebuy</span>، راك كتدل شخص أخر على الهمزة الحقيقية و الجودة.
-              </p>
+              <div className="h-px bg-border/50" />
 
-              <p className="text-foreground leading-relaxed text-lg">
-                ماتخليش تجربتك توقف عندك.. اعطي <span className="font-bold">'The Score'</span> اليوم، وكون نتا هو الحاجز ضد النصب وضياع الفلوس. 💪
-              </p>
+              {/* Mission Text - changes based on selected language */}
+              <div dir={selectedLang === 'ar' ? 'rtl' : 'ltr'} className={`${selectedLang === 'ar' ? 'text-right' : 'text-left'} space-y-4`}>
+                {selectedLang === 'ar' && (
+                  <>
+                    <p className="text-foreground leading-relaxed">
+                      🛡️ تجربتك مع هاد المنتج ماشي غير معلومة، هي حماية لواحد آخر غدي يشري نفس المنتوج.
+                    </p>
+                    <p className="text-foreground leading-relaxed">
+                      ملي كتقول <span className="text-destructive font-semibold">Not</span>، راك كتوقف سلسلة ديال النصب. وملي كتقول <span className="text-success font-semibold">Rebuy</span>، راك كتدل شخص أخر على الجودة.
+                    </p>
+                  </>
+                )}
+                {selectedLang === 'fr' && (
+                  <>
+                    <p className="text-foreground leading-relaxed">
+                      🛡️ Votre expérience avec ce produit n'est pas qu'une simple info, c'est une protection pour quelqu'un d'autre.
+                    </p>
+                    <p className="text-foreground leading-relaxed">
+                      Quand vous dites <span className="text-destructive font-semibold">Not</span>, vous arrêtez une arnaque. Quand vous dites <span className="text-success font-semibold">Rebuy</span>, vous guidez vers la qualité.
+                    </p>
+                  </>
+                )}
+                {selectedLang === 'en' && (
+                  <>
+                    <p className="text-foreground leading-relaxed">
+                      🛡️ Your experience with this product isn't just information, it's protection for someone else about to buy the same thing.
+                    </p>
+                    <p className="text-foreground leading-relaxed">
+                      When you say <span className="text-destructive font-semibold">Not</span>, you stop a scam chain. When you say <span className="text-success font-semibold">Rebuy</span>, you guide someone to quality.
+                    </p>
+                  </>
+                )}
+              </div>
 
               <button
                 onClick={handleAgree}
-                className="w-full mt-4 py-4 px-8 rounded-2xl bg-success text-success-foreground font-semibold text-lg hover:brightness-110 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
+                className="w-full py-4 px-8 rounded-2xl bg-success text-success-foreground font-semibold text-lg hover:brightness-110 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
               >
                 <Check className="w-5 h-5" />
-                متافقين؟
+                {selectedLang === 'ar' ? 'متافقين؟' : selectedLang === 'fr' ? "D'accord!" : "I Agree!"}
               </button>
             </div>
           </motion.div>
