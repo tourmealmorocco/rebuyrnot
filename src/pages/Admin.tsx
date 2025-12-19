@@ -8,9 +8,10 @@ import AdminSidebar from '@/components/admin/AdminSidebar';
 import ProductManager from '@/components/admin/ProductManager';
 import ProductEditor from '@/components/admin/ProductEditor';
 import LivePreview from '@/components/admin/LivePreview';
+import CommentManager from '@/components/admin/CommentManager';
 import { Product } from '@/data/products';
 
-type View = 'products' | 'settings';
+type View = 'products' | 'settings' | 'comments';
 
 const Admin = () => {
   const { isAuthenticated, logout } = useAdmin();
@@ -58,7 +59,7 @@ const Admin = () => {
         {/* Header */}
         <header className="h-16 border-b border-border bg-card flex items-center justify-between px-6">
           <h1 className="text-xl font-bold">
-            {currentView === 'products' ? 'Product Management' : 'Settings'}
+            {currentView === 'products' ? 'Product Management' : currentView === 'comments' ? 'Comments Management' : 'Settings'}
           </h1>
           <div className="flex items-center gap-3">
             <Button
@@ -100,6 +101,9 @@ const Admin = () => {
                   />
                 )}
               </>
+            )}
+            {currentView === 'comments' && (
+              <CommentManager />
             )}
             {currentView === 'settings' && (
               <div className="bg-card border border-border rounded-xl p-6">

@@ -1,14 +1,15 @@
-import { Package, Settings, Home } from 'lucide-react';
+import { Package, Settings, Home, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface AdminSidebarProps {
-  currentView: 'products' | 'settings';
-  onViewChange: (view: 'products' | 'settings') => void;
+  currentView: 'products' | 'settings' | 'comments';
+  onViewChange: (view: 'products' | 'settings' | 'comments') => void;
 }
 
 const AdminSidebar = ({ currentView, onViewChange }: AdminSidebarProps) => {
   const menuItems = [
     { id: 'products' as const, label: 'Products', icon: Package },
+    { id: 'comments' as const, label: 'Comments', icon: MessageSquare },
     { id: 'settings' as const, label: 'Settings', icon: Settings },
   ];
 
