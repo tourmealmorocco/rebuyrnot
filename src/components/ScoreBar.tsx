@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import useCountUp from '@/hooks/useCountUp';
+import useInView from '@/hooks/useInView';
 
 interface ScoreBarProps {
   rebuyPercent: number;
@@ -9,13 +10,14 @@ interface ScoreBarProps {
 
 const ScoreBar = ({ rebuyPercent, totalVotes }: ScoreBarProps) => {
   const { t } = useLanguage();
+  const [ref, isInView] = useInView<HTMLDivElement>({ threshold: 0.3 });
   const notPercent = 100 - rebuyPercent;
   
-  const animatedRebuy = useCountUp(rebuyPercent, { duration: 1500, delay: 100 });
-  const animatedNot = useCountUp(notPercent, { duration: 1500, delay: 100 });
+  const animatedRebuy = useCountUp(rebuyPercent, { duration: 1800, delay: 200, enabled: isInView });
+  const animatedNot = useCountUp(notPercent, { duration: 1800, delay: 200, enabled: isInView });
 
   return (
-    <div className="space-y-3">
+    <div ref={ref} className="space-y-3">
       <div className="flex items-center justify-between text-sm font-medium">
         <span className="text-success">{t.rebuy}</span>
         <span className="text-muted-foreground">{t.theScore}</span>
@@ -26,14 +28,14 @@ const ScoreBar = ({ rebuyPercent, totalVotes }: ScoreBarProps) => {
         <motion.div
           className="h-full bg-success"
           initial={{ width: 0 }}
-          animate={{ width: `${rebuyPercent}%` }}
-          transition={{ duration: 1.5, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.1 }}
+          animate={{ width: isInView ? `${rebuyPercent}%` : 0 }}
+          transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
         />
         <motion.div
           className="h-full bg-destructive"
           initial={{ width: 0 }}
-          animate={{ width: `${notPercent}%` }}
-          transition={{ duration: 1.5, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.15 }}
+          animate={{ width: isInView ? `${notPercent}%` : 0 }}
+          transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
         />
       </div>
 
@@ -41,7 +43,7 @@ const ScoreBar = ({ rebuyPercent, totalVotes }: ScoreBarProps) => {
         <motion.span 
           className="font-bold text-success"
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={{ opacity: isInView ? 1 : 0 }}
           transition={{ delay: 0.3 }}
         >
           {animatedRebuy}%
@@ -49,7 +51,7 @@ const ScoreBar = ({ rebuyPercent, totalVotes }: ScoreBarProps) => {
         <motion.span 
           className="text-muted-foreground text-xs"
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={{ opacity: isInView ? 1 : 0 }}
           transition={{ delay: 0.4 }}
         >
           {totalVotes.toLocaleString()} {t.votes}
@@ -57,7 +59,7 @@ const ScoreBar = ({ rebuyPercent, totalVotes }: ScoreBarProps) => {
         <motion.span 
           className="font-bold text-destructive"
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={{ opacity: isInView ? 1 : 0 }}
           transition={{ delay: 0.3 }}
         >
           {animatedNot}%

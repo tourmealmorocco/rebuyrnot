@@ -21,9 +21,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
       <motion.div
         layout
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-50px" }}
         exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         className="bg-card rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-border/50 cursor-pointer hover:scale-[1.02]"
       >
         {/* Image */}
