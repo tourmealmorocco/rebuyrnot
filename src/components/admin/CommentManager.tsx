@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { MessageSquare, Trash2, Filter, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { MessageSquare, Trash2, Filter, ThumbsUp, ThumbsDown, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAdmin } from '@/contexts/AdminContext';
@@ -30,6 +30,23 @@ const CommentManager = () => {
   const [productFilter, setProductFilter] = useState<string>('all');
   const [voteFilter, setVoteFilter] = useState<string>('all');
   const [sortOrder, setSortOrder] = useState<string>('newest');
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Listen for storage changes and window focus to refresh comments
+  useEffect(() => {
+    const handleStorageChange = () => setRefreshKey(k => k + 1);
+    const handleFocus = () => setRefreshKey(k => k + 1);
+    
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('focus', handleFocus);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, []);
+
+  const handleRefresh = () => setRefreshKey(k => k + 1);
 
   // Collect all comments from all products
   const allComments = useMemo(() => {
@@ -59,7 +76,7 @@ const CommentManager = () => {
     });
     
     return comments;
-  }, [products]);
+  }, [products, refreshKey]);
 
   // Apply filters and sorting
   const filteredComments = useMemo(() => {
@@ -129,6 +146,10 @@ const CommentManager = () => {
           <MessageSquare className="w-6 h-6 text-primary" />
           <h2 className="text-xl font-bold">Comments Management</h2>
         </div>
+        <Button variant="outline" size="sm" onClick={handleRefresh}>
+          <RefreshCw className="w-4 h-4 mr-2" />
+          Refresh
+        </Button>
       </div>
 
       {/* Stats */}
