@@ -1,3 +1,10 @@
+export interface Comment {
+  id: string;
+  vote: 'rebuy' | 'not';
+  text: string;
+  date: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -6,7 +13,11 @@ export interface Product {
   image: string;
   rebuyCount: number;
   notCount: number;
-  recentVotes: number; // votes in last hour
+  recentVotes: number;
+  description: string;
+  topRebuyReasons: string[];
+  topNotReasons: string[];
+  comments: Comment[];
 }
 
 export const products: Product[] = [
@@ -19,6 +30,18 @@ export const products: Product[] = [
     rebuyCount: 847,
     notCount: 234,
     recentVotes: 32,
+    description: 'Electric sedan with cutting-edge technology, autopilot features, and impressive range. A game-changer in the EV market.',
+    topRebuyReasons: [
+      'Amazing autopilot and tech features',
+      'Low maintenance costs over time',
+      'Incredible acceleration and performance'
+    ],
+    topNotReasons: [
+      'Build quality inconsistencies',
+      'Limited service center availability',
+      'Expensive repairs when needed'
+    ],
+    comments: []
   },
   {
     id: '2',
@@ -29,6 +52,18 @@ export const products: Product[] = [
     rebuyCount: 1523,
     notCount: 412,
     recentVotes: 45,
+    description: 'Flagship smartphone featuring titanium design, A17 Pro chip, and advanced camera system with 5x optical zoom.',
+    topRebuyReasons: [
+      'Best-in-class camera quality',
+      'Smooth iOS experience and updates',
+      'Premium titanium build quality'
+    ],
+    topNotReasons: [
+      'High price point',
+      'Limited customization options',
+      'Battery could be better'
+    ],
+    comments: []
   },
   {
     id: '3',
@@ -39,6 +74,18 @@ export const products: Product[] = [
     rebuyCount: 623,
     notCount: 189,
     recentVotes: 18,
+    description: 'Revolutionary hair styling tool using air to curl, wave, smooth and dry hair without extreme heat damage.',
+    topRebuyReasons: [
+      'Protects hair from heat damage',
+      'Multiple styling attachments included',
+      'Professional results at home'
+    ],
+    topNotReasons: [
+      'Very expensive for a hair tool',
+      'Learning curve to use properly',
+      'Heavy and bulky to handle'
+    ],
+    comments: []
   },
   {
     id: '4',
@@ -49,6 +96,18 @@ export const products: Product[] = [
     rebuyCount: 2341,
     notCount: 321,
     recentVotes: 67,
+    description: 'Iconic basketball sneaker that transcended sports to become a cultural phenomenon and fashion staple.',
+    topRebuyReasons: [
+      'Timeless design never goes out of style',
+      'Great resale value',
+      'Comfortable for daily wear'
+    ],
+    topNotReasons: [
+      'Hard to get popular colorways',
+      'Prices inflated by resellers',
+      'Not the most comfortable for sports'
+    ],
+    comments: []
   },
   {
     id: '5',
@@ -59,6 +118,18 @@ export const products: Product[] = [
     rebuyCount: 1892,
     notCount: 287,
     recentVotes: 52,
+    description: 'Professional laptop with Apple Silicon M3 chip, stunning Liquid Retina XDR display, and all-day battery life.',
+    topRebuyReasons: [
+      'Incredible M3 chip performance',
+      'Best laptop display on the market',
+      'Silent operation and amazing battery'
+    ],
+    topNotReasons: [
+      'Very expensive starting price',
+      'Limited port selection',
+      'Not compatible with all software'
+    ],
+    comments: []
   },
   {
     id: '6',
@@ -69,6 +140,18 @@ export const products: Product[] = [
     rebuyCount: 567,
     notCount: 423,
     recentVotes: 15,
+    description: 'Luxury SUV with military heritage, combining rugged capability with premium comfort and iconic boxy design.',
+    topRebuyReasons: [
+      'Iconic design that stands out',
+      'Incredible off-road capability',
+      'Luxurious interior quality'
+    ],
+    topNotReasons: [
+      'Extremely high fuel consumption',
+      'Very expensive to maintain',
+      'Poor handling on highways'
+    ],
+    comments: []
   },
   {
     id: '7',
@@ -79,6 +162,18 @@ export const products: Product[] = [
     rebuyCount: 1234,
     notCount: 567,
     recentVotes: 23,
+    description: 'Clean-lined bed frame with storage options, available in multiple sizes and finishes for modern bedrooms.',
+    topRebuyReasons: [
+      'Great value for the price',
+      'Useful storage drawers option',
+      'Clean minimalist design'
+    ],
+    topNotReasons: [
+      'Complicated assembly process',
+      'Particleboard durability concerns',
+      'Can be squeaky over time'
+    ],
+    comments: []
   },
   {
     id: '8',
@@ -89,6 +184,18 @@ export const products: Product[] = [
     rebuyCount: 2156,
     notCount: 389,
     recentVotes: 41,
+    description: 'Next-gen gaming console with lightning-fast SSD, stunning 4K graphics, and innovative DualSense controller.',
+    topRebuyReasons: [
+      'Amazing exclusive game library',
+      'DualSense controller is revolutionary',
+      'Super fast loading times'
+    ],
+    topNotReasons: [
+      'Large and bulky design',
+      'Limited SSD storage space',
+      'Few next-gen exclusives so far'
+    ],
+    comments: []
   },
   {
     id: '9',
@@ -99,9 +206,25 @@ export const products: Product[] = [
     rebuyCount: 892,
     notCount: 156,
     recentVotes: 28,
+    description: 'Science-backed skincare with clinical formulations at affordable prices. Transparent ingredients and proven results.',
+    topRebuyReasons: [
+      'Incredible value for quality',
+      'Transparent ingredient lists',
+      'Visible results on skin'
+    ],
+    topNotReasons: [
+      'Can be confusing to choose products',
+      'Some products cause purging',
+      'Basic packaging and experience'
+    ],
+    comments: []
   },
 ];
 
 export const getTotalVotes = () => {
   return products.reduce((acc, p) => acc + p.rebuyCount + p.notCount, 0);
+};
+
+export const getProductById = (id: string): Product | undefined => {
+  return products.find(p => p.id === id);
 };

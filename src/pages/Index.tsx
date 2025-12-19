@@ -12,7 +12,7 @@ const Index = () => {
   const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
-  const [totalVotes, setTotalVotes] = useState(getTotalVotes());
+  const totalVotes = getTotalVotes();
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -23,11 +23,6 @@ const Index = () => {
       return matchesSearch && matchesCategory;
     });
   }, [searchQuery, selectedCategory]);
-
-  const handleVote = (productId: string, vote: 'rebuy' | 'not') => {
-    setTotalVotes((prev) => prev + 1);
-    // In a real app, this would sync with backend
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -70,7 +65,7 @@ const Index = () => {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} onVote={handleVote} />
+            <ProductCard key={product.id} product={product} />
           ))}
         </motion.div>
 

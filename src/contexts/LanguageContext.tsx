@@ -21,6 +21,20 @@ interface Translations {
   };
   voted: string;
   votes: string;
+  // New translations
+  idRebuy: string;
+  notAgain: string;
+  finalVerdict: string;
+  topReasonsRebuy: string;
+  topReasonsNot: string;
+  writeReview: string;
+  reviewPlaceholder: string;
+  submit: string;
+  cancel: string;
+  backToProducts: string;
+  owners: string;
+  thankYou: string;
+  alreadyVoted: string;
 }
 
 const translations: Record<Language, Translations> = {
@@ -43,6 +57,19 @@ const translations: Record<Language, Translations> = {
     },
     voted: 'You voted',
     votes: 'votes',
+    idRebuy: "I'd Rebuy",
+    notAgain: "Not Again",
+    finalVerdict: "Final verdict from",
+    topReasonsRebuy: "Top 3 Reasons to Rebuy",
+    topReasonsNot: "Top 3 Reasons Not Again",
+    writeReview: "Write Your Review",
+    reviewPlaceholder: "Share your experience with this product...",
+    submit: "Submit",
+    cancel: "Cancel",
+    backToProducts: "Back to Products",
+    owners: "owners",
+    thankYou: "Thanks for your vote!",
+    alreadyVoted: "You already voted on this product",
   },
   fr: {
     rebuy: 'Racheter',
@@ -63,6 +90,19 @@ const translations: Record<Language, Translations> = {
     },
     voted: 'Vous avez voté',
     votes: 'votes',
+    idRebuy: "Je rachèterais",
+    notAgain: "Plus jamais",
+    finalVerdict: "Verdict final de",
+    topReasonsRebuy: "Top 3 Raisons de Racheter",
+    topReasonsNot: "Top 3 Raisons de Ne Pas",
+    writeReview: "Écrire Votre Avis",
+    reviewPlaceholder: "Partagez votre expérience avec ce produit...",
+    submit: "Soumettre",
+    cancel: "Annuler",
+    backToProducts: "Retour aux Produits",
+    owners: "propriétaires",
+    thankYou: "Merci pour votre vote!",
+    alreadyVoted: "Vous avez déjà voté pour ce produit",
   },
   ar: {
     rebuy: 'نعاود نشريه',
@@ -83,6 +123,19 @@ const translations: Record<Language, Translations> = {
     },
     voted: 'صوتت',
     votes: 'أصوات',
+    idRebuy: "غادي نعاود نشريه",
+    notAgain: "ماغاديش",
+    finalVerdict: "الحكم النهائي من",
+    topReasonsRebuy: "أهم 3 أسباب للشراء",
+    topReasonsNot: "أهم 3 أسباب للندم",
+    writeReview: "اكتب رأيك",
+    reviewPlaceholder: "شارك تجربتك مع هذا المنتج...",
+    submit: "إرسال",
+    cancel: "إلغاء",
+    backToProducts: "رجوع للمنتجات",
+    owners: "مالك",
+    thankYou: "شكراً على تصويتك!",
+    alreadyVoted: "سبق لك التصويت على هذا المنتج",
   },
 };
 
