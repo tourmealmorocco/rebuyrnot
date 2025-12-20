@@ -137,7 +137,12 @@ export const useProducts = () => {
       throw new Error('Already voted');
     }
 
-    // Insert vote
+    // Record vote attempt for rate limiting
+    await supabase.from('vote_rate_limits').insert({
+      user_fingerprint: fingerprint
+    });
+
+    // Insert vote (RLS policy will check rate limit)
     const { error: voteError } = await supabase.from('user_votes').insert({
       product_id: productId,
       user_fingerprint: fingerprint,
@@ -145,6 +150,10 @@ export const useProducts = () => {
     });
 
     if (voteError) {
+      // Check if it's a rate limit error
+      if (voteError.message.includes('rate') || voteError.code === '42501') {
+        throw new Error('Rate limit exceeded. Please try again later.');
+      }
       console.error('Error submitting vote:', voteError);
       throw voteError;
     }

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { LogOut, Plus, Eye, Package, Settings } from 'lucide-react';
+import { LogOut, Eye, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAdmin } from '@/contexts/AdminContext';
 import AdminSidebar from '@/components/admin/AdminSidebar';
@@ -14,7 +13,7 @@ import { Product } from '@/data/products';
 type View = 'products' | 'settings' | 'comments';
 
 const Admin = () => {
-  const { isAuthenticated, logout } = useAdmin();
+  const { isAuthenticated, isAdmin, logout, loading, user } = useAdmin();
   const navigate = useNavigate();
   const [currentView, setCurrentView] = useState<View>('products');
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -22,15 +21,55 @@ const Admin = () => {
   const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!loading && !isAuthenticated) {
       navigate('/admin/login');
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, loading, navigate]);
 
-  if (!isAuthenticated) return null;
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-muted-foreground">Loading...</div>
+      </div>
+    );
+  }
 
-  const handleLogout = () => {
-    logout();
+  // Show not authenticated message
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  // Show not admin message
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="bg-card border border-border rounded-2xl p-8 max-w-md text-center">
+          <div className="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <ShieldAlert className="w-8 h-8 text-destructive" />
+          </div>
+          <h1 className="text-2xl font-bold mb-2">Access Denied</h1>
+          <p className="text-muted-foreground text-sm mb-6">
+            You don't have admin privileges. Please contact an administrator to request access.
+          </p>
+          <p className="text-xs text-muted-foreground mb-4">
+            Signed in as: {user?.email}
+          </p>
+          <div className="flex gap-2 justify-center">
+            <Button variant="outline" onClick={() => navigate('/')}>
+              Go Home
+            </Button>
+            <Button variant="destructive" onClick={logout}>
+              Sign Out
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
   };
 
@@ -62,6 +101,7 @@ const Admin = () => {
             {currentView === 'products' ? 'Product Management' : currentView === 'comments' ? 'Comments Management' : 'Settings'}
           </h1>
           <div className="flex items-center gap-3">
+            <span className="text-sm text-muted-foreground">{user?.email}</span>
             <Button
               variant="outline"
               size="sm"
