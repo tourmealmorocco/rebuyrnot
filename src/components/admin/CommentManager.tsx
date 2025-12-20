@@ -1,8 +1,10 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { MessageSquare, Trash2, Filter, ThumbsUp, ThumbsDown, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAdmin } from '@/contexts/AdminContext';
+import { useComments } from '@/hooks/useProducts';
+import { toast } from '@/hooks/use-toast';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,72 +17,16 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-interface CommentWithProduct {
-  id: string;
-  productId: string;
-  productName: string;
-  productBrand: string;
-  vote: 'rebuy' | 'not';
-  text: string;
-  date: string;
-}
-
 const CommentManager = () => {
-  const { products, updateProduct } = useAdmin();
+  const { products } = useAdmin();
+  const { comments, loading, deleteComment, refetch } = useComments();
   const [productFilter, setProductFilter] = useState<string>('all');
   const [voteFilter, setVoteFilter] = useState<string>('all');
   const [sortOrder, setSortOrder] = useState<string>('newest');
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  // Listen for storage changes and window focus to refresh comments
-  useEffect(() => {
-    const handleStorageChange = () => setRefreshKey(k => k + 1);
-    const handleFocus = () => setRefreshKey(k => k + 1);
-    
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('focus', handleFocus);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('focus', handleFocus);
-    };
-  }, []);
-
-  const handleRefresh = () => setRefreshKey(k => k + 1);
-
-  // Collect all comments from all products
-  const allComments = useMemo(() => {
-    const comments: CommentWithProduct[] = [];
-    
-    products.forEach(product => {
-      // Get comments from localStorage for this product
-      const storedComments = localStorage.getItem(`rebuyrnot-comments-${product.id}`);
-      if (storedComments) {
-        try {
-          const parsed = JSON.parse(storedComments);
-          parsed.forEach((comment: { vote: 'rebuy' | 'not'; text: string; date: string }, index: number) => {
-            comments.push({
-              id: `${product.id}-${index}`,
-              productId: product.id,
-              productName: product.name,
-              productBrand: product.brand,
-              vote: comment.vote,
-              text: comment.text,
-              date: comment.date
-            });
-          });
-        } catch (e) {
-          console.error('Failed to parse comments for product:', product.id);
-        }
-      }
-    });
-    
-    return comments;
-  }, [products, refreshKey]);
 
   // Apply filters and sorting
   const filteredComments = useMemo(() => {
-    let result = [...allComments];
+    let result = [...comments];
     
     // Filter by product
     if (productFilter !== 'all') {
@@ -100,31 +46,22 @@ const CommentManager = () => {
     });
     
     return result;
-  }, [allComments, productFilter, voteFilter, sortOrder]);
+  }, [comments, productFilter, voteFilter, sortOrder]);
 
   // Stats
   const stats = useMemo(() => ({
-    total: allComments.length,
-    rebuy: allComments.filter(c => c.vote === 'rebuy').length,
-    not: allComments.filter(c => c.vote === 'not').length
-  }), [allComments]);
+    total: comments.length,
+    rebuy: comments.filter(c => c.vote === 'rebuy').length,
+    not: comments.filter(c => c.vote === 'not').length
+  }), [comments]);
 
-  const handleDeleteComment = (comment: CommentWithProduct) => {
-    const storedComments = localStorage.getItem(`rebuyrnot-comments-${comment.productId}`);
-    if (storedComments) {
-      try {
-        const parsed = JSON.parse(storedComments);
-        const index = parseInt(comment.id.split('-')[1]);
-        parsed.splice(index, 1);
-        localStorage.setItem(`rebuyrnot-comments-${comment.productId}`, JSON.stringify(parsed));
-        // Force re-render by updating the product
-        const product = products.find(p => p.id === comment.productId);
-        if (product) {
-          updateProduct(product.id, { ...product });
-        }
-      } catch (e) {
-        console.error('Failed to delete comment');
-      }
+  const handleDeleteComment = async (id: string) => {
+    try {
+      await deleteComment(id);
+      toast({ title: 'Comment deleted' });
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+      toast({ title: 'Error deleting comment', variant: 'destructive' });
     }
   };
 
@@ -138,6 +75,14 @@ const CommentManager = () => {
     });
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <p className="text-muted-foreground">Loading comments...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -146,7 +91,7 @@ const CommentManager = () => {
           <MessageSquare className="w-6 h-6 text-primary" />
           <h2 className="text-xl font-bold">Comments Management</h2>
         </div>
-        <Button variant="outline" size="sm" onClick={handleRefresh}>
+        <Button variant="outline" size="sm" onClick={() => refetch()}>
           <RefreshCw className="w-4 h-4 mr-2" />
           Refresh
         </Button>
@@ -272,7 +217,7 @@ const CommentManager = () => {
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
-                      onClick={() => handleDeleteComment(comment)}
+                      onClick={() => handleDeleteComment(comment.id)}
                       className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     >
                       Delete

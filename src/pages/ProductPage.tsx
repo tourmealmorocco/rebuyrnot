@@ -5,15 +5,26 @@ import { ArrowLeft, Check, X, Share2, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage, Language } from '@/contexts/LanguageContext';
 import { useAdmin } from '@/contexts/AdminContext';
+import { supabase } from '@/integrations/supabase/client';
 import ProductScoreDisplay from '@/components/ProductScoreDisplay';
 import ScoreBar from '@/components/ScoreBar';
 import CommentModal from '@/components/CommentModal';
 import { toast } from '@/hooks/use-toast';
 
+// Generate a simple fingerprint for the user
+const getUserFingerprint = (): string => {
+  let fingerprint = localStorage.getItem('user-fingerprint');
+  if (!fingerprint) {
+    fingerprint = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+    localStorage.setItem('user-fingerprint', fingerprint);
+  }
+  return fingerprint;
+};
+
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>();
   const { t, isRTL, language, setLanguage } = useLanguage();
-  const { getProductById } = useAdmin();
+  const { getProductById, loading } = useAdmin();
   const product = getProductById(id || '');
   const [showLangMenu, setShowLangMenu] = useState(false);
   
@@ -21,24 +32,49 @@ const ProductPage = () => {
   const [userVote, setUserVote] = useState<'rebuy' | 'not' | null>(null);
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [pendingVote, setPendingVote] = useState<'rebuy' | 'not' | null>(null);
-  const [localCounts, setLocalCounts] = useState({
-    rebuy: product?.rebuyCount || 0,
-    not: product?.notCount || 0
-  });
+  const [localCounts, setLocalCounts] = useState({ rebuy: 0, not: 0 });
+  const [checkingVote, setCheckingVote] = useState(true);
 
+  // Check if user has already voted
+  useEffect(() => {
+    const checkUserVote = async () => {
+      if (!id) return;
+      
+      const fingerprint = getUserFingerprint();
+      const { data } = await supabase
+        .from('user_votes')
+        .select('vote_type')
+        .eq('product_id', id)
+        .eq('user_fingerprint', fingerprint)
+        .maybeSingle();
+
+      if (data) {
+        setHasVoted(true);
+        setUserVote(data.vote_type as 'rebuy' | 'not');
+      }
+      setCheckingVote(false);
+    };
+
+    checkUserVote();
+  }, [id]);
+
+  // Update local counts when product changes
   useEffect(() => {
     if (product) {
-      const voted = localStorage.getItem(`rebuyrnot-vote-${product.id}`);
-      if (voted) {
-        setHasVoted(true);
-        setUserVote(voted as 'rebuy' | 'not');
-      }
       setLocalCounts({
         rebuy: product.rebuyCount,
         not: product.notCount
       });
     }
   }, [product]);
+
+  if (loading || checkingVote) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -63,30 +99,60 @@ const ProductPage = () => {
     setShowCommentModal(true);
   };
 
-  const handleCommentSubmit = (comment: string) => {
-    if (!pendingVote) return;
-    
-    // Save vote
-    localStorage.setItem(`rebuyrnot-vote-${product.id}`, pendingVote);
-    if (comment) {
-      const comments = JSON.parse(localStorage.getItem(`rebuyrnot-comments-${product.id}`) || '[]');
-      comments.push({ vote: pendingVote, text: comment, date: new Date().toISOString() });
-      localStorage.setItem(`rebuyrnot-comments-${product.id}`, JSON.stringify(comments));
+  const handleCommentSubmit = async (comment: string) => {
+    if (!pendingVote || !id) return;
+
+    try {
+      const fingerprint = getUserFingerprint();
+
+      // Insert vote
+      const { error: voteError } = await supabase.from('user_votes').insert({
+        product_id: id,
+        user_fingerprint: fingerprint,
+        vote_type: pendingVote
+      });
+
+      if (voteError) {
+        if (voteError.code === '23505') {
+          toast({ title: t.alreadyVoted, variant: 'destructive' });
+          return;
+        }
+        throw voteError;
+      }
+
+      // Update product vote count
+      const updates = pendingVote === 'rebuy'
+        ? { rebuy_votes: localCounts.rebuy + 1 }
+        : { not_votes: localCounts.not + 1 };
+
+      await supabase.from('products').update(updates).eq('id', id);
+
+      // Add comment if provided
+      if (comment) {
+        await supabase.from('comments').insert({
+          product_id: id,
+          vote_type: pendingVote,
+          text: comment
+        });
+      }
+
+      // Update local state
+      setHasVoted(true);
+      setUserVote(pendingVote);
+      setLocalCounts(prev => ({
+        rebuy: pendingVote === 'rebuy' ? prev.rebuy + 1 : prev.rebuy,
+        not: pendingVote === 'not' ? prev.not + 1 : prev.not
+      }));
+
+      toast({
+        title: t.thankYou,
+        className: pendingVote === 'rebuy' ? 'border-success' : 'border-destructive'
+      });
+    } catch (error) {
+      console.error('Error submitting vote:', error);
+      toast({ title: 'Error submitting vote', variant: 'destructive' });
     }
-    
-    // Update local state
-    setHasVoted(true);
-    setUserVote(pendingVote);
-    setLocalCounts(prev => ({
-      rebuy: pendingVote === 'rebuy' ? prev.rebuy + 1 : prev.rebuy,
-      not: pendingVote === 'not' ? prev.not + 1 : prev.not
-    }));
-    
-    toast({
-      title: t.thankYou,
-      className: pendingVote === 'rebuy' ? 'border-success' : 'border-destructive'
-    });
-    
+
     setPendingVote(null);
   };
 
