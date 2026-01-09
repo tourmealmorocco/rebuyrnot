@@ -14,6 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
+      brands: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          is_active: boolean
+          logo_url: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          logo_url: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          logo_url?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          is_active: boolean
+          key: string
+          name_ar: string
+          name_en: string
+          name_fr: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          key: string
+          name_ar: string
+          name_en: string
+          name_fr: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          key?: string
+          name_ar?: string
+          name_en?: string
+          name_fr?: string
+        }
+        Relationships: []
+      }
       comments: {
         Row: {
           created_at: string | null

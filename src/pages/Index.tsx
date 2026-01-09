@@ -4,16 +4,14 @@ import Navbar from '@/components/Navbar';
 import CategoryPills from '@/components/CategoryPills';
 import ProductCard from '@/components/ProductCard';
 import MissionPopup from '@/components/MissionPopup';
+import HeroSection from '@/components/HeroSection';
 import { useAdmin } from '@/contexts/AdminContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-type Category = 'all' | 'cars' | 'tech' | 'beauty' | 'fashion' | 'home';
-
 const Index = () => {
-  const { t } = useLanguage();
   const { products, getTotalVotes } = useAdmin();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<Category>('all');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const totalVotes = getTotalVotes();
 
   const filteredProducts = useMemo(() => {
@@ -35,21 +33,8 @@ const Index = () => {
       />
 
       <main className="container mx-auto px-4 pt-32 pb-12">
-        {/* Hero */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-10"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold mb-3 tracking-tight">
-            {t.theScore}
-          </h1>
-          <p className="text-muted-foreground text-lg max-w-md mx-auto">
-            {t.rebuy} <span className="text-success font-semibold">🟢</span> or {t.not}{' '}
-            <span className="text-destructive font-semibold">🔴</span>
-          </p>
-        </motion.div>
+        {/* Hero Section with Search and Brand Carousel */}
+        <HeroSection searchQuery={searchQuery} onSearchChange={setSearchQuery} />
 
         {/* Categories */}
         <motion.div
