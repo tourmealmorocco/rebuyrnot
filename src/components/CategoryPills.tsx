@@ -1,30 +1,43 @@
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useCategories } from '@/hooks/useCategories';
 import { motion } from 'framer-motion';
 
-type Category = 'all' | 'cars' | 'tech' | 'beauty' | 'fashion' | 'home';
-
 interface CategoryPillsProps {
-  selected: Category;
-  onSelect: (category: Category) => void;
+  selected: string;
+  onSelect: (category: string) => void;
 }
 
 const CategoryPills = ({ selected, onSelect }: CategoryPillsProps) => {
-  const { t } = useLanguage();
+  const { language } = useLanguage();
+  const { activeCategories, loading } = useCategories();
 
-  const categories: { key: Category; label: string }[] = [
-    { key: 'all', label: t.categories.all },
-    { key: 'cars', label: t.categories.cars },
-    { key: 'tech', label: t.categories.tech },
-    { key: 'beauty', label: t.categories.beauty },
-    { key: 'fashion', label: t.categories.fashion },
-    { key: 'home', label: t.categories.home },
-  ];
+  // Get label based on current language
+  const getLabel = (category: { name_en: string; name_fr: string; name_ar: string }) => {
+    switch (language) {
+      case 'fr':
+        return category.name_fr;
+      case 'ar':
+        return category.name_ar;
+      default:
+        return category.name_en;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <div key={i} className="h-10 w-20 bg-secondary rounded-full animate-pulse" />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-      {categories.map((cat) => (
+      {activeCategories.map((cat) => (
         <motion.button
-          key={cat.key}
+          key={cat.id}
           onClick={() => onSelect(cat.key)}
           whileTap={{ scale: 0.95 }}
           className={`px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
@@ -33,7 +46,7 @@ const CategoryPills = ({ selected, onSelect }: CategoryPillsProps) => {
               : 'bg-secondary hover:bg-secondary/80'
           }`}
         >
-          {cat.label}
+          {getLabel(cat)}
         </motion.button>
       ))}
     </div>

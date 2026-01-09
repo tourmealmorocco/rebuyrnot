@@ -35,6 +35,11 @@ interface Translations {
   owners: string;
   thankYou: string;
   alreadyVoted: string;
+  // Hero section
+  heroTitle: string;
+  heroSubtitle: string;
+  or: string;
+  searchPlaceholder: string;
 }
 
 const translations: Record<Language, Translations> = {
@@ -70,6 +75,10 @@ const translations: Record<Language, Translations> = {
     owners: "owners",
     thankYou: "Thanks for your vote!",
     alreadyVoted: "You already voted on this product",
+    heroTitle: "What did you buy?",
+    heroSubtitle: "Would you buy it again?",
+    or: "or",
+    searchPlaceholder: "Search products, brands...",
   },
   fr: {
     rebuy: 'Racheter',
@@ -103,6 +112,10 @@ const translations: Record<Language, Translations> = {
     owners: "propriétaires",
     thankYou: "Merci pour votre vote!",
     alreadyVoted: "Vous avez déjà voté pour ce produit",
+    heroTitle: "Qu'avez-vous acheté?",
+    heroSubtitle: "Le rachèteriez-vous?",
+    or: "ou",
+    searchPlaceholder: "Rechercher produits, marques...",
   },
   ar: {
     rebuy: 'نعاود نشريه',
@@ -136,6 +149,10 @@ const translations: Record<Language, Translations> = {
     owners: "مالك",
     thankYou: "شكراً على تصويتك!",
     alreadyVoted: "سبق لك التصويت على هذا المنتج",
+    heroTitle: "شنو شريتي؟",
+    heroSubtitle: "واش غادي تعاود تشريه؟",
+    or: "ولا",
+    searchPlaceholder: "ابحث عن منتجات، ماركات...",
   },
 };
 

@@ -8,9 +8,11 @@ import ProductManager from '@/components/admin/ProductManager';
 import ProductEditor from '@/components/admin/ProductEditor';
 import LivePreview from '@/components/admin/LivePreview';
 import CommentManager from '@/components/admin/CommentManager';
+import BrandManager from '@/components/admin/BrandManager';
+import CategoryManager from '@/components/admin/CategoryManager';
 import { Product } from '@/data/products';
 
-type View = 'products' | 'settings' | 'comments';
+type View = 'products' | 'settings' | 'comments' | 'brands' | 'categories';
 
 const Admin = () => {
   const { isAuthenticated, isAdmin, logout, loading, user } = useAdmin();
@@ -98,7 +100,10 @@ const Admin = () => {
         {/* Header */}
         <header className="h-16 border-b border-border bg-card flex items-center justify-between px-6">
           <h1 className="text-xl font-bold">
-            {currentView === 'products' ? 'Product Management' : currentView === 'comments' ? 'Comments Management' : 'Settings'}
+            {currentView === 'products' ? 'Product Management' : 
+             currentView === 'comments' ? 'Comments Management' : 
+             currentView === 'brands' ? 'Brands Management' :
+             currentView === 'categories' ? 'Categories Management' : 'Settings'}
           </h1>
           <div className="flex items-center gap-3">
             <span className="text-sm text-muted-foreground">{user?.email}</span>
@@ -144,6 +149,12 @@ const Admin = () => {
             )}
             {currentView === 'comments' && (
               <CommentManager />
+            )}
+            {currentView === 'brands' && (
+              <BrandManager />
+            )}
+            {currentView === 'categories' && (
+              <CategoryManager />
             )}
             {currentView === 'settings' && (
               <div className="bg-card border border-border rounded-xl p-6">
