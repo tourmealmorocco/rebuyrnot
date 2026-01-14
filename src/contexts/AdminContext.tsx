@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { Product } from '@/data/products';
 import { supabase } from '@/integrations/supabase/client';
 import { User, Session } from '@supabase/supabase-js';
+import { logger } from '@/lib/logger';
 
 interface AdminContextType {
   products: Product[];
@@ -39,7 +40,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
       .maybeSingle();
 
     if (error) {
-      console.error('Error checking admin role:', error);
+      logger.error('Error checking admin role:', error);
       return false;
     }
 
@@ -53,7 +54,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
       .order('created_at', { ascending: true });
 
     if (error) {
-      console.error('Error fetching products:', error);
+      logger.error('Error fetching products:', error);
       return;
     }
 
@@ -176,7 +177,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     });
 
     if (error) {
-      console.error('Error adding product:', error);
+      logger.error('Error adding product:', error);
       throw error;
     }
   };
@@ -199,7 +200,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
       .eq('id', id);
 
     if (error) {
-      console.error('Error updating product:', error);
+      logger.error('Error updating product:', error);
       throw error;
     }
   };
@@ -207,7 +208,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   const deleteProduct = async (id: string) => {
     const { error } = await supabase.from('products').delete().eq('id', id);
     if (error) {
-      console.error('Error deleting product:', error);
+      logger.error('Error deleting product:', error);
       throw error;
     }
   };
