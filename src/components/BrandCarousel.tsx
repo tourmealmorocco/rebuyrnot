@@ -30,12 +30,12 @@ const BrandCarousel = () => {
         {duplicatedBrands.map((brand, index) => (
           <div
             key={`${brand.id}-${index}`}
-            className="flex-shrink-0 grayscale hover:grayscale-0 transition-all duration-300"
+            className="flex-shrink-0 hover:scale-110 transition-transform duration-300"
           >
             <img
               src={brand.logo_url}
               alt={brand.name}
-              className="h-10 md:h-12 w-auto object-contain opacity-60 hover:opacity-100 transition-opacity"
+              className="h-10 md:h-12 w-auto object-contain"
             />
           </div>
         ))}

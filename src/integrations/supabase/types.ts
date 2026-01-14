@@ -151,6 +151,45 @@ export type Database = {
         }
         Relationships: []
       }
+      site_content: {
+        Row: {
+          category: string
+          content_ar: string
+          content_en: string
+          content_fr: string
+          content_key: string
+          content_type: string
+          created_at: string
+          description: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          content_ar: string
+          content_en: string
+          content_fr: string
+          content_key: string
+          content_type?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          content_ar?: string
+          content_en?: string
+          content_fr?: string
+          content_key?: string
+          content_type?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
