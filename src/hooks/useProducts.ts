@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Product } from '@/data/products';
+import { logger, validateComment } from '@/lib/logger';
 
 // Generate a simple fingerprint for the user
 const getUserFingerprint = (): string => {
@@ -23,7 +24,7 @@ export const useProducts = () => {
       .order('created_at', { ascending: true });
 
     if (error) {
-      console.error('Error fetching products:', error);
+      logger.error('Error fetching products:', error);
       return;
     }
 
@@ -86,7 +87,7 @@ export const useProducts = () => {
     });
 
     if (error) {
-      console.error('Error adding product:', error);
+      logger.error('Error adding product:', error);
       throw error;
     }
   };
@@ -109,7 +110,7 @@ export const useProducts = () => {
       .eq('id', id);
 
     if (error) {
-      console.error('Error updating product:', error);
+      logger.error('Error updating product:', error);
       throw error;
     }
   };
@@ -117,7 +118,7 @@ export const useProducts = () => {
   const deleteProduct = async (id: string) => {
     const { error } = await supabase.from('products').delete().eq('id', id);
     if (error) {
-      console.error('Error deleting product:', error);
+      logger.error('Error deleting product:', error);
       throw error;
     }
   };
@@ -154,7 +155,7 @@ export const useProducts = () => {
       if (voteError.message.includes('rate') || voteError.code === '42501') {
         throw new Error('Rate limit exceeded. Please try again later.');
       }
-      console.error('Error submitting vote:', voteError);
+      logger.error('Error submitting vote:', voteError);
       throw voteError;
     }
 
@@ -168,12 +169,17 @@ export const useProducts = () => {
       await supabase.from('products').update(updates).eq('id', productId);
     }
 
-    // Add comment if provided
+    // Add comment if provided (with validation)
     if (comment) {
+      const commentError = validateComment(comment);
+      if (commentError) {
+        throw new Error(commentError);
+      }
+      
       await supabase.from('comments').insert({
         product_id: productId,
         vote_type: voteType,
-        text: comment
+        text: comment.trim()
       });
     }
   };
@@ -233,7 +239,7 @@ export const useComments = () => {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching comments:', error);
+      logger.error('Error fetching comments:', error);
       return;
     }
 
@@ -273,7 +279,7 @@ export const useComments = () => {
   const deleteComment = async (id: string) => {
     const { error } = await supabase.from('comments').delete().eq('id', id);
     if (error) {
-      console.error('Error deleting comment:', error);
+      logger.error('Error deleting comment:', error);
       throw error;
     }
   };

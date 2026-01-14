@@ -10,6 +10,7 @@ import ProductScoreDisplay from '@/components/ProductScoreDisplay';
 import ScoreBar from '@/components/ScoreBar';
 import CommentModal from '@/components/CommentModal';
 import { toast } from '@/hooks/use-toast';
+import { logger, validateComment } from '@/lib/logger';
 
 // Generate a simple fingerprint for the user
 const getUserFingerprint = (): string => {
@@ -127,12 +128,18 @@ const ProductPage = () => {
 
       await supabase.from('products').update(updates).eq('id', id);
 
-      // Add comment if provided
+      // Add comment if provided (with validation)
       if (comment) {
+        const commentError = validateComment(comment);
+        if (commentError) {
+          toast({ title: commentError, variant: 'destructive' });
+          return;
+        }
+        
         await supabase.from('comments').insert({
           product_id: id,
           vote_type: pendingVote,
-          text: comment
+          text: comment.trim()
         });
       }
 
@@ -149,7 +156,7 @@ const ProductPage = () => {
         className: pendingVote === 'rebuy' ? 'border-success' : 'border-destructive'
       });
     } catch (error) {
-      console.error('Error submitting vote:', error);
+      logger.error('Error submitting vote:', error);
       toast({ title: 'Error submitting vote', variant: 'destructive' });
     }
 
