@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AdminProvider } from "@/contexts/AdminContext";
+import { UserProvider } from "@/contexts/UserContext";
 import Index from "./pages/Index";
 import ProductPage from "./pages/ProductPage";
 import Admin from "./pages/Admin";
@@ -17,21 +18,23 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AdminProvider>
-        <LanguageProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/product/:id" element={<ProductPage />} />
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/admin/login" element={<AdminLogin />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </LanguageProvider>
+        <UserProvider>
+          <LanguageProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/product/:id" element={<ProductPage />} />
+                  <Route path="/admin" element={<Admin />} />
+                  <Route path="/admin/login" element={<AdminLogin />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </TooltipProvider>
+          </LanguageProvider>
+        </UserProvider>
       </AdminProvider>
     </QueryClientProvider>
   );

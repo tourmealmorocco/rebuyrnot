@@ -40,6 +40,17 @@ interface Translations {
   heroSubtitle: string;
   or: string;
   searchPlaceholder: string;
+  // Auth translations
+  signInToVote: string;
+  whySignIn: string;
+  continueWithGoogle: string;
+  enterYourName: string;
+  namePlaceholder: string;
+  nameExplanation: string;
+  nameRequired: string;
+  nameTooShort: string;
+  profileUpdated: string;
+  continue: string;
 }
 
 const translations: Record<Language, Translations> = {
@@ -79,6 +90,16 @@ const translations: Record<Language, Translations> = {
     heroSubtitle: "Would you buy it again?",
     or: "or",
     searchPlaceholder: "Search products, brands...",
+    signInToVote: "Sign in to vote",
+    whySignIn: "Sign in with your Google account to share your experience and vote on products.",
+    continueWithGoogle: "Continue with Google",
+    enterYourName: "What's your name?",
+    namePlaceholder: "Your display name",
+    nameExplanation: "This name will be shown with your reviews.",
+    nameRequired: "Please enter your name",
+    nameTooShort: "Name must be at least 2 characters",
+    profileUpdated: "Profile updated!",
+    continue: "Continue",
   },
   fr: {
     rebuy: 'Racheter',
@@ -116,6 +137,16 @@ const translations: Record<Language, Translations> = {
     heroSubtitle: "Le rachèteriez-vous?",
     or: "ou",
     searchPlaceholder: "Rechercher produits, marques...",
+    signInToVote: "Connectez-vous pour voter",
+    whySignIn: "Connectez-vous avec votre compte Google pour partager votre expérience et voter.",
+    continueWithGoogle: "Continuer avec Google",
+    enterYourName: "Quel est votre nom?",
+    namePlaceholder: "Votre nom d'affichage",
+    nameExplanation: "Ce nom sera affiché avec vos avis.",
+    nameRequired: "Veuillez entrer votre nom",
+    nameTooShort: "Le nom doit contenir au moins 2 caractères",
+    profileUpdated: "Profil mis à jour!",
+    continue: "Continuer",
   },
   ar: {
     rebuy: 'نعاود نشريه',
@@ -153,6 +184,16 @@ const translations: Record<Language, Translations> = {
     heroSubtitle: "واش غادي تعاود تشريه؟",
     or: "ولا",
     searchPlaceholder: "ابحث عن منتجات، ماركات...",
+    signInToVote: "سجل الدخول للتصويت",
+    whySignIn: "سجل الدخول بحسابك على Google لمشاركة تجربتك والتصويت.",
+    continueWithGoogle: "تواصل مع Google",
+    enterYourName: "شنو سميتك؟",
+    namePlaceholder: "الاسم ديالك",
+    nameExplanation: "هاد الاسم غادي يبان مع الآراء ديالك.",
+    nameRequired: "من فضلك دخل سميتك",
+    nameTooShort: "الاسم خاصو يكون على الأقل 2 حروف",
+    profileUpdated: "تم تحديث الملف الشخصي!",
+    continue: "متابعة",
   },
 };
 

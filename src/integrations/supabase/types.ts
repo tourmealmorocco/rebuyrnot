@@ -151,6 +151,30 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          created_at: string | null
+          display_name: string | null
+          email: string
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          display_name?: string | null
+          email: string
+          id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          display_name?: string | null
+          email?: string
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       site_content: {
         Row: {
           category: string
@@ -217,6 +241,7 @@ export type Database = {
           id: string
           product_id: string
           user_fingerprint: string
+          user_id: string | null
           vote_type: string
         }
         Insert: {
@@ -224,6 +249,7 @@ export type Database = {
           id?: string
           product_id: string
           user_fingerprint: string
+          user_id?: string | null
           vote_type: string
         }
         Update: {
@@ -231,6 +257,7 @@ export type Database = {
           id?: string
           product_id?: string
           user_fingerprint?: string
+          user_id?: string | null
           vote_type?: string
         }
         Relationships: [
