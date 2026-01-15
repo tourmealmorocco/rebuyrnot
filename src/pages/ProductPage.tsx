@@ -5,59 +5,60 @@ import { ArrowLeft, Check, X, Share2, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage, Language } from '@/contexts/LanguageContext';
 import { useAdmin } from '@/contexts/AdminContext';
+import { useUser } from '@/contexts/UserContext';
 import { supabase } from '@/integrations/supabase/client';
 import ProductScoreDisplay from '@/components/ProductScoreDisplay';
 import ScoreBar from '@/components/ScoreBar';
 import CommentModal from '@/components/CommentModal';
+import GoogleSignInModal from '@/components/GoogleSignInModal';
+import NameInputModal from '@/components/NameInputModal';
 import { toast } from '@/hooks/use-toast';
 import { logger, validateComment } from '@/lib/logger';
-
-// Generate a simple fingerprint for the user
-const getUserFingerprint = (): string => {
-  let fingerprint = localStorage.getItem('user-fingerprint');
-  if (!fingerprint) {
-    fingerprint = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
-    localStorage.setItem('user-fingerprint', fingerprint);
-  }
-  return fingerprint;
-};
 
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>();
   const { t, isRTL, language, setLanguage } = useLanguage();
   const { getProductById, loading } = useAdmin();
+  const { user, profile, isProfileComplete } = useUser();
   const product = getProductById(id || '');
   const [showLangMenu, setShowLangMenu] = useState(false);
   
   const [hasVoted, setHasVoted] = useState(false);
   const [userVote, setUserVote] = useState<'rebuy' | 'not' | null>(null);
   const [showCommentModal, setShowCommentModal] = useState(false);
+  const [showSignInModal, setShowSignInModal] = useState(false);
+  const [showNameModal, setShowNameModal] = useState(false);
   const [pendingVote, setPendingVote] = useState<'rebuy' | 'not' | null>(null);
   const [localCounts, setLocalCounts] = useState({ rebuy: 0, not: 0 });
   const [checkingVote, setCheckingVote] = useState(true);
 
-  // Check if user has already voted
+  // Check if user has already voted (using user_id)
   useEffect(() => {
     const checkUserVote = async () => {
-      if (!id) return;
+      if (!id || !user) {
+        setCheckingVote(false);
+        return;
+      }
       
-      const fingerprint = getUserFingerprint();
       const { data } = await supabase
         .from('user_votes')
         .select('vote_type')
         .eq('product_id', id)
-        .eq('user_fingerprint', fingerprint)
+        .eq('user_id', user.id)
         .maybeSingle();
 
       if (data) {
         setHasVoted(true);
         setUserVote(data.vote_type as 'rebuy' | 'not');
+      } else {
+        setHasVoted(false);
+        setUserVote(null);
       }
       setCheckingVote(false);
     };
 
     checkUserVote();
-  }, [id]);
+  }, [id, user]);
 
   // Update local counts when product changes
   useEffect(() => {
@@ -69,7 +70,19 @@ const ProductPage = () => {
     }
   }, [product]);
 
-  if (loading || checkingVote) {
+  // Check if user just signed in and has a pending vote
+  useEffect(() => {
+    if (user && pendingVote && !showSignInModal) {
+      // User just signed in, check if they need to enter name
+      if (!isProfileComplete) {
+        setShowNameModal(true);
+      } else {
+        setShowCommentModal(true);
+      }
+    }
+  }, [user, isProfileComplete, pendingVote, showSignInModal]);
+
+  if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <p className="text-muted-foreground">Loading...</p>
@@ -96,20 +109,39 @@ const ProductPage = () => {
       });
       return;
     }
+
     setPendingVote(vote);
+
+    // Check authentication flow
+    if (!user) {
+      setShowSignInModal(true);
+      return;
+    }
+
+    if (!isProfileComplete) {
+      setShowNameModal(true);
+      return;
+    }
+
     setShowCommentModal(true);
   };
 
+  const handleNameSuccess = () => {
+    setShowNameModal(false);
+    if (pendingVote) {
+      setShowCommentModal(true);
+    }
+  };
+
   const handleCommentSubmit = async (comment: string) => {
-    if (!pendingVote || !id) return;
+    if (!pendingVote || !id || !user) return;
 
     try {
-      const fingerprint = getUserFingerprint();
-
-      // Insert vote
+      // Insert vote with user_id
       const { error: voteError } = await supabase.from('user_votes').insert({
         product_id: id,
-        user_fingerprint: fingerprint,
+        user_id: user.id,
+        user_fingerprint: user.id, // Use user.id as fingerprint for backwards compatibility
         vote_type: pendingVote
       });
 
@@ -349,6 +381,25 @@ const ProductPage = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* Google Sign In Modal */}
+      <GoogleSignInModal
+        isOpen={showSignInModal}
+        onClose={() => {
+          setShowSignInModal(false);
+          setPendingVote(null);
+        }}
+      />
+
+      {/* Name Input Modal */}
+      <NameInputModal
+        isOpen={showNameModal}
+        onClose={() => {
+          setShowNameModal(false);
+          setPendingVote(null);
+        }}
+        onSuccess={handleNameSuccess}
+      />
 
       {/* Comment Modal */}
       <CommentModal
