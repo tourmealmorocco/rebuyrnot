@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Save, Plus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useAdmin } from '@/contexts/AdminContext';
+import { useCategories } from '@/hooks/useCategories';
 import { Product } from '@/data/products';
 import { toast } from '@/hooks/use-toast';
 
@@ -21,10 +22,9 @@ interface ProductEditorProps {
   onClose: () => void;
 }
 
-const categories = ['cars', 'tech', 'beauty', 'fashion', 'home'] as const;
-
 const ProductEditor = ({ product, onClose }: ProductEditorProps) => {
   const { addProduct, updateProduct } = useAdmin();
+  const { categories, loading: categoriesLoading } = useCategories();
   const isEditing = !!product;
 
   const [formData, setFormData] = useState({
@@ -116,15 +116,15 @@ const ProductEditor = ({ product, onClose }: ProductEditorProps) => {
             <Label htmlFor="category">Category</Label>
             <Select
               value={formData.category}
-              onValueChange={(value) => setFormData({ ...formData, category: value as typeof formData.category })}
+              onValueChange={(value) => setFormData({ ...formData, category: value })}
             >
               <SelectTrigger>
-                <SelectValue />
+                <SelectValue placeholder={categoriesLoading ? 'Loading...' : 'Select category'} />
               </SelectTrigger>
               <SelectContent>
                 {categories.map((cat) => (
-                  <SelectItem key={cat} value={cat}>
-                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  <SelectItem key={cat.id} value={cat.key}>
+                    {cat.name_en}
                   </SelectItem>
                 ))}
               </SelectContent>

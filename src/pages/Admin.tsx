@@ -12,9 +12,10 @@ import BrandManager from '@/components/admin/BrandManager';
 import CategoryManager from '@/components/admin/CategoryManager';
 import ContentManager from '@/components/admin/ContentManager';
 import UserManager from '@/components/admin/UserManager';
+import SubmissionManager from '@/components/admin/SubmissionManager';
 import { Product } from '@/data/products';
 
-type View = 'products' | 'settings' | 'comments' | 'brands' | 'categories' | 'content' | 'users';
+type View = 'products' | 'settings' | 'comments' | 'brands' | 'categories' | 'content' | 'users' | 'submissions';
 
 const Admin = () => {
   const { isAuthenticated, isAdmin, logout, loading, user } = useAdmin();
@@ -107,7 +108,8 @@ const Admin = () => {
              currentView === 'brands' ? 'Brands Management' :
              currentView === 'categories' ? 'Categories Management' :
              currentView === 'content' ? 'Content & Translations' :
-             currentView === 'users' ? 'Users Management' : 'Settings'}
+             currentView === 'users' ? 'Users Management' :
+             currentView === 'submissions' ? 'Product Submissions' : 'Settings'}
           </h1>
           <div className="flex items-center gap-3">
             <span className="text-sm text-muted-foreground">{user?.email}</span>
@@ -165,6 +167,9 @@ const Admin = () => {
             )}
             {currentView === 'users' && (
               <UserManager />
+            )}
+            {currentView === 'submissions' && (
+              <SubmissionManager />
             )}
             {currentView === 'settings' && (
               <div className="bg-card border border-border rounded-xl p-6">
