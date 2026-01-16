@@ -19,7 +19,7 @@ const ProductPage = () => {
   const { id } = useParams<{ id: string }>();
   const { t, isRTL, language, setLanguage } = useLanguage();
   const { getProductById, loading } = useAdmin();
-  const { user, profile, isProfileComplete } = useUser();
+  const { user, loading: authLoading, isProfileComplete } = useUser();
   const product = getProductById(id || '');
   const [showLangMenu, setShowLangMenu] = useState(false);
   
@@ -31,6 +31,40 @@ const ProductPage = () => {
   const [pendingVote, setPendingVote] = useState<'rebuy' | 'not' | null>(null);
   const [localCounts, setLocalCounts] = useState({ rebuy: 0, not: 0 });
   const [checkingVote, setCheckingVote] = useState(true);
+
+  // Persist pending vote across OAuth redirect
+  const savePendingVote = (vote: 'rebuy' | 'not') => {
+    sessionStorage.setItem('pendingVote', JSON.stringify({ productId: id, voteType: vote }));
+  };
+
+  const clearPendingVote = () => {
+    sessionStorage.removeItem('pendingVote');
+  };
+
+  // Restore pending vote after OAuth redirect
+  useEffect(() => {
+    if (authLoading) return;
+    
+    const savedVoteStr = sessionStorage.getItem('pendingVote');
+    if (savedVoteStr && user) {
+      try {
+        const savedVote = JSON.parse(savedVoteStr);
+        if (savedVote.productId === id) {
+          setPendingVote(savedVote.voteType);
+          clearPendingVote();
+          
+          // Continue the flow based on profile status
+          if (!isProfileComplete) {
+            setShowNameModal(true);
+          } else {
+            setShowCommentModal(true);
+          }
+        }
+      } catch (e) {
+        clearPendingVote();
+      }
+    }
+  }, [authLoading, user, id, isProfileComplete]);
 
   // Check if user has already voted (using user_id)
   useEffect(() => {
@@ -70,19 +104,8 @@ const ProductPage = () => {
     }
   }, [product]);
 
-  // Check if user just signed in and has a pending vote
-  useEffect(() => {
-    if (user && pendingVote && !showSignInModal) {
-      // User just signed in, check if they need to enter name
-      if (!isProfileComplete) {
-        setShowNameModal(true);
-      } else {
-        setShowCommentModal(true);
-      }
-    }
-  }, [user, isProfileComplete, pendingVote, showSignInModal]);
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <p className="text-muted-foreground">Loading...</p>
@@ -114,6 +137,7 @@ const ProductPage = () => {
 
     // Check authentication flow
     if (!user) {
+      savePendingVote(vote); // Persist before OAuth redirect
       setShowSignInModal(true);
       return;
     }
@@ -388,6 +412,7 @@ const ProductPage = () => {
         onClose={() => {
           setShowSignInModal(false);
           setPendingVote(null);
+          clearPendingVote();
         }}
       />
 
