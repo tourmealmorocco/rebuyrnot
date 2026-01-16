@@ -1,14 +1,15 @@
-import { Package, Settings, Home, MessageSquare, Image, Tag, Languages, Users } from 'lucide-react';
+import { Package, Settings, Home, MessageSquare, Image, Tag, Languages, Users, Inbox } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface AdminSidebarProps {
-  currentView: 'products' | 'settings' | 'comments' | 'brands' | 'categories' | 'content' | 'users';
-  onViewChange: (view: 'products' | 'settings' | 'comments' | 'brands' | 'categories' | 'content' | 'users') => void;
+  currentView: 'products' | 'settings' | 'comments' | 'brands' | 'categories' | 'content' | 'users' | 'submissions';
+  onViewChange: (view: 'products' | 'settings' | 'comments' | 'brands' | 'categories' | 'content' | 'users' | 'submissions') => void;
 }
 
 const AdminSidebar = ({ currentView, onViewChange }: AdminSidebarProps) => {
   const menuItems = [
     { id: 'products' as const, label: 'Products', icon: Package },
+    { id: 'submissions' as const, label: 'Submissions', icon: Inbox },
     { id: 'brands' as const, label: 'Brands', icon: Image },
     { id: 'categories' as const, label: 'Categories', icon: Tag },
     { id: 'content' as const, label: 'Content', icon: Languages },

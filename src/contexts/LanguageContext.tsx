@@ -51,6 +51,17 @@ interface Translations {
   nameTooShort: string;
   profileUpdated: string;
   continue: string;
+  // Product submission
+  submitProduct: string;
+  submitProductDesc: string;
+  productName: string;
+  brandName: string;
+  category: string;
+  selectCategory: string;
+  description: string;
+  productDescPlaceholder: string;
+  imageUrl: string;
+  suggestProduct: string;
 }
 
 const translations: Record<Language, Translations> = {
@@ -86,7 +97,7 @@ const translations: Record<Language, Translations> = {
     owners: "owners",
     thankYou: "Thanks for your vote!",
     alreadyVoted: "You already voted on this product",
-    heroTitle: "What did you buy?",
+    heroTitle: "Should you really buy it?",
     heroSubtitle: "Would you buy it again?",
     or: "or",
     searchPlaceholder: "Search products, brands...",
@@ -100,6 +111,16 @@ const translations: Record<Language, Translations> = {
     nameTooShort: "Name must be at least 2 characters",
     profileUpdated: "Profile updated!",
     continue: "Continue",
+    submitProduct: "Suggest a Product",
+    submitProductDesc: "Submit a product you want others to vote on",
+    productName: "Product Name",
+    brandName: "Brand",
+    category: "Category",
+    selectCategory: "Select category",
+    description: "Description",
+    productDescPlaceholder: "Brief description of the product...",
+    imageUrl: "Image URL",
+    suggestProduct: "Suggest Product",
   },
   fr: {
     rebuy: 'Racheter',
@@ -133,7 +154,7 @@ const translations: Record<Language, Translations> = {
     owners: "propriétaires",
     thankYou: "Merci pour votre vote!",
     alreadyVoted: "Vous avez déjà voté pour ce produit",
-    heroTitle: "Qu'avez-vous acheté?",
+    heroTitle: "Devriez-vous vraiment l'acheter ?",
     heroSubtitle: "Le rachèteriez-vous?",
     or: "ou",
     searchPlaceholder: "Rechercher produits, marques...",
@@ -147,6 +168,16 @@ const translations: Record<Language, Translations> = {
     nameTooShort: "Le nom doit contenir au moins 2 caractères",
     profileUpdated: "Profil mis à jour!",
     continue: "Continuer",
+    submitProduct: "Suggérer un produit",
+    submitProductDesc: "Soumettez un produit sur lequel vous voulez que les autres votent",
+    productName: "Nom du produit",
+    brandName: "Marque",
+    category: "Catégorie",
+    selectCategory: "Sélectionner une catégorie",
+    description: "Description",
+    productDescPlaceholder: "Brève description du produit...",
+    imageUrl: "URL de l'image",
+    suggestProduct: "Suggérer un produit",
   },
   ar: {
     rebuy: 'نعاود نشريه',
@@ -180,7 +211,7 @@ const translations: Record<Language, Translations> = {
     owners: "مالك",
     thankYou: "شكراً على تصويتك!",
     alreadyVoted: "سبق لك التصويت على هذا المنتج",
-    heroTitle: "شنو شريتي؟",
+    heroTitle: "واش بصّح تستاهل تشريها؟",
     heroSubtitle: "واش غادي تعاود تشريه؟",
     or: "ولا",
     searchPlaceholder: "ابحث عن منتجات، ماركات...",
@@ -194,6 +225,16 @@ const translations: Record<Language, Translations> = {
     nameTooShort: "الاسم خاصو يكون على الأقل 2 حروف",
     profileUpdated: "تم تحديث الملف الشخصي!",
     continue: "متابعة",
+    submitProduct: "اقترح منتج",
+    submitProductDesc: "اقترح منتج باش الناس يصوتو عليه",
+    productName: "اسم المنتج",
+    brandName: "الماركة",
+    category: "الفئة",
+    selectCategory: "اختار الفئة",
+    description: "الوصف",
+    productDescPlaceholder: "وصف قصير ديال المنتج...",
+    imageUrl: "رابط الصورة",
+    suggestProduct: "اقترح منتج",
   },
 };
 

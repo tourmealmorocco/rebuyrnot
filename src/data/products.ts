@@ -9,7 +9,7 @@ export interface Product {
   id: string;
   name: string;
   brand: string;
-  category: 'cars' | 'tech' | 'beauty' | 'fashion' | 'home';
+  category: string;
   image: string;
   rebuyCount: number;
   notCount: number;
