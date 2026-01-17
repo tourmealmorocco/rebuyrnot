@@ -1,15 +1,17 @@
-import { Search, Globe } from 'lucide-react';
+import { Search, Globe, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage, Language } from '@/contexts/LanguageContext';
 import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
 
 interface NavbarProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   totalVotes: number;
+  onSuggestClick?: () => void;
 }
 
-const Navbar = ({ searchQuery, onSearchChange, totalVotes }: NavbarProps) => {
+const Navbar = ({ searchQuery, onSearchChange, totalVotes, onSuggestClick }: NavbarProps) => {
   const { language, setLanguage, t, isRTL } = useLanguage();
 
   const languages: { code: Language; label: string }[] = [
@@ -50,6 +52,19 @@ const Navbar = ({ searchQuery, onSearchChange, totalVotes }: NavbarProps) => {
 
           {/* Right side */}
           <div className="flex items-center gap-3 md:gap-6">
+            {/* Suggest Button */}
+            {onSuggestClick && (
+              <Button
+                onClick={onSuggestClick}
+                variant="outline"
+                size="sm"
+                className="gap-1.5 rounded-full"
+              >
+                <Plus className="w-4 h-4" />
+                <span className="hidden sm:inline">{t.suggest}</span>
+              </Button>
+            )}
+
             {/* Total votes counter */}
             <div className="hidden md:flex flex-col items-end">
               <span className="text-xs text-muted-foreground">{t.totalScores}</span>

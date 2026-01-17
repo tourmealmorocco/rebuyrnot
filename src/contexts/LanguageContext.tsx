@@ -62,6 +62,8 @@ interface Translations {
   productDescPlaceholder: string;
   imageUrl: string;
   suggestProduct: string;
+  suggest: string;
+  thankYouSubmission: string;
 }
 
 const translations: Record<Language, Translations> = {
@@ -121,6 +123,8 @@ const translations: Record<Language, Translations> = {
     productDescPlaceholder: "Brief description of the product...",
     imageUrl: "Image URL",
     suggestProduct: "Suggest Product",
+    suggest: "Suggest",
+    thankYouSubmission: "Thank you for your suggestion!",
   },
   fr: {
     rebuy: 'Racheter',
@@ -178,6 +182,8 @@ const translations: Record<Language, Translations> = {
     productDescPlaceholder: "Brève description du produit...",
     imageUrl: "URL de l'image",
     suggestProduct: "Suggérer un produit",
+    suggest: "Suggérer",
+    thankYouSubmission: "Merci pour votre suggestion!",
   },
   ar: {
     rebuy: 'نعاود نشريه',
@@ -235,6 +241,8 @@ const translations: Record<Language, Translations> = {
     productDescPlaceholder: "وصف قصير ديال المنتج...",
     imageUrl: "رابط الصورة",
     suggestProduct: "اقترح منتج",
+    suggest: "اقترح",
+    thankYouSubmission: "شكراً على اقتراحك!",
   },
 };
 
